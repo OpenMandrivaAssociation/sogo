@@ -61,7 +61,8 @@ prog sogo = {
 # Not autoconf, even though it looks similar
 # Not actually %_prefix/System -- the bogus configure script translates
 # that to "GNUstep System installation"
-./configure --prefix=%_prefix/System
+# --enable-debug (the default) uses -O0, we don't want that
+./configure --prefix=%_prefix/System --disable-debug
 
 %build
 make %?_smp_mflags
