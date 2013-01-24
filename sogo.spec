@@ -24,6 +24,7 @@ BuildRequires: gnustep-make >= 2.6.2-3
 BuildRequires: gnustep-base-devel gnustep-gui-devel
 BuildRequires: gcc-objc sope-devel
 BuildRequires: pkgconfig(libmemcached)
+BuildRequires: pkgconfig(libcurl)
 
 %description
 SOGo is fully supported and trusted groupware server with a focus
