@@ -9,7 +9,7 @@ Version: 2.0.7
 %if "%beta" != ""
 Release: 0.%beta.1
 %else
-Release: 8
+Release: 9
 %endif
 Source: http://www.sogo.nu/files/downloads/SOGo/Sources/SOGo-%version%beta.tar.gz
 %else
