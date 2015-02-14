@@ -1,5 +1,4 @@
-sources:
-  SOGo-2.0.3a.tar.gz: ab09ba7110a508299e19d15510f8a4f37bf42d0c
-  SOGo-2.0.5a.tar.gz: a559ae03239968c847d364db1cc32996266d0bf1
-  SOGo-2.0.6b.tar.gz: 6304a5c65980f5ab1ebeb910df56763192a60e81
+removed_sources:
   SOGo-2.0.7.tar.gz: 66e141a54bbb10cf40990e5b84ebbbb739936335
+sources:
+  SOGo-2.2.16.tar.gz: 57da5a3d59977e00efe496b8511b165e4af090f9

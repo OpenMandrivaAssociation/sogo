@@ -4,12 +4,12 @@
 %define debug_package %nil
 
 Name: sogo
-Version: 2.0.7
+Version: 2.2.16
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release: 0.%beta.1
 %else
-Release: 9
+Release: 1
 %endif
 Source: http://www.sogo.nu/files/downloads/SOGo/Sources/SOGo-%version%beta.tar.gz
 %else
@@ -73,7 +73,8 @@ make %?_smp_mflags install DESTDIR="$RPM_BUILD_ROOT" GNUSTEP_INSTALLATION_DOMAIN
 
 %files
 %_sbindir/*
-%_libdir/*.so*
+%dir %_libdir/sogo
+%_libdir/sogo/*.so.*
 %_libdir/GNUstep/WOxElemBuilders-4.9
 %_libdir/GNUstep/SaxMappings
 %_libdir/GNUstep/SaxDrivers-4.9
@@ -82,10 +83,13 @@ make %?_smp_mflags install DESTDIR="$RPM_BUILD_ROOT" GNUSTEP_INSTALLATION_DOMAIN
 %_libdir/GNUstep/Libraries/Resources/NGCards
 %_libdir/GNUstep/Frameworks/SOGo.framework
 %exclude %_libdir/GNUstep/Frameworks/*/Versions/*/Headers
+%exclude %_libdir/GNUstep/Frameworks/*/Versions/*/sogo/*.so
 
 %files devel
 %_includedir/NGCards
 %_includedir/SOGo
 %_includedir/SOGoUI
 %_includedir/GDLContentStore
+%_libdir/sogo/*.so
+%_libdir/GNUstep/Frameworks/*/Versions/*/sogo/*.so
 %_libdir/GNUstep/Frameworks/*/Versions/*/Headers
