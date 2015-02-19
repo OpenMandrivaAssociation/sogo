@@ -1,0 +1,2 @@
+# Loads of false positives caused by GNUstep FS layout
+addFilter("E: devel-file-in-non-devel-package")

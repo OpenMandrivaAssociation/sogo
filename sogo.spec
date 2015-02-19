@@ -4,18 +4,19 @@
 %define debug_package %nil
 
 Name: sogo
-Version: 2.0.7
+Version: 2.2.16
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release: 0.%beta.1
 %else
-Release: 8
+Release: 1
 %endif
-Source: http://www.sogo.nu/files/downloads/SOGo/Sources/SOGo-%version%beta.tar.gz
+Source0: http://www.sogo.nu/files/downloads/SOGo/Sources/SOGo-%version%beta.tar.gz
 %else
 Release: 0.%scmrev.1ark
-Source: SOGo-%scmrev.tar.xz
+Source0: SOGo-%scmrev.tar.xz
 %endif
+Source1000: %{name}.rpmlintrc
 Summary: The SOGo groupware server
 URL: http://sogo.nu/
 License: GPL/LGPL v2+
@@ -73,7 +74,7 @@ make %?_smp_mflags install DESTDIR="$RPM_BUILD_ROOT" GNUSTEP_INSTALLATION_DOMAIN
 
 %files
 %_sbindir/*
-%_libdir/*.so*
+%_libdir/sogo
 %_libdir/GNUstep/WOxElemBuilders-4.9
 %_libdir/GNUstep/SaxMappings
 %_libdir/GNUstep/SaxDrivers-4.9
