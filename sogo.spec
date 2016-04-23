@@ -4,12 +4,12 @@
 %define debug_package %nil
 
 Name: sogo
-Version: 2.2.17a
+Version: 3.0.2
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release: 0.%beta.1
 %else
-Release: 3
+Release: 1
 %endif
 Source0: http://www.sogo.nu/files/downloads/SOGo/Sources/SOGo-%version%beta.tar.gz
 %else
@@ -60,13 +60,11 @@ prog sogo = {
 %prep
 %setup -q -n SOGo-%version
 # Not autoconf, even though it looks similar
-# Not actually %_prefix/System -- the bogus configure script translates
-# that to "GNUstep System installation"
 # --enable-debug (the default) uses -O0, we don't want that
-./configure --prefix=%_prefix/System --disable-debug
+./configure --disable-debug
 
 %build
-make %?_smp_mflags
+make %?_smp_mflags GNUSTEP_INSTALLATION_DOMAIN=SYSTEM
 
 %install
 rm -rf $RPM_BUILD_ROOT
