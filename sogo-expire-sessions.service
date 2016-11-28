@@ -1,0 +1,9 @@
+[Unit]
+Description=Clean up expired SOGO sessions
+
+[Service]
+Type=oneshot
+Environment="EXPIRE_MINUTES=60"
+EnvironmentFile=-/etc/sysconfig/sogo
+ExecStart=/usr/sbin/sogo-tool expire-sessions ${EXPIRE_MINUTES}
+User=sogo

@@ -1,0 +1,12 @@
+[Unit]
+Description=The SOGO Groupware/webmail service
+After=network.target
+After=mariadb.service
+
+[Service]
+Environment="PREFORK=3"
+EnvironmentFile=-/etc/sysconfig/sogo
+Type=forking
+ExecStart=/usr/sbin/sogod -WOWorkersCount ${PREFORK} -WOPidFile /run/sogo/sogo.pid -WOLogFile /var/log/sogo/sogo.log
+PIDFile=/run/sogo/sogo.pid
+User=sogo

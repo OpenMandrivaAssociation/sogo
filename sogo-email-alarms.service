@@ -1,0 +1,7 @@
+[Unit]
+Description=Send SOGO email alarms
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/sogo-ealarms-notify
+User=sogo

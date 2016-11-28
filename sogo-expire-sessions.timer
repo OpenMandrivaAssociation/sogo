@@ -1,0 +1,8 @@
+[Unit]
+Description=Automatically clean up expired SOGO sessions
+
+[Timer]
+OnUnitActiveSec=1m
+
+[Install]
+WantedBy=timers.target

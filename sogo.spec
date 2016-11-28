@@ -4,7 +4,7 @@
 %define debug_package %nil
 
 Name: sogo
-Version: 3.2.0
+Version: 3.2.3
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release: 0.%beta.1
@@ -16,6 +16,11 @@ Source0: http://www.sogo.nu/files/downloads/SOGo/Sources/SOGo-%version%beta.tar.
 Release: 0.%scmrev.1ark
 Source0: SOGo-%scmrev.tar.xz
 %endif
+Source10: sogo-email-alarms.service
+Source11: sogo-email-alarms.timer
+Source12: sogo-expire-sessions.service
+Source13: sogo-expire-sessions.timer
+Source14: sogo.service
 Source1000: %{name}.rpmlintrc
 Summary: The SOGo groupware server
 URL: http://sogo.nu/
@@ -69,6 +74,8 @@ make %?_smp_mflags GNUSTEP_INSTALLATION_DOMAIN=SYSTEM
 %install
 rm -rf $RPM_BUILD_ROOT
 make %?_smp_mflags install DESTDIR="$RPM_BUILD_ROOT" GNUSTEP_INSTALLATION_DOMAIN=SYSTEM
+mkdir -p %{buildroot}/lib/systemd/system
+cp %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{buildroot}/lib/systemd/system/
 
 %files
 %_sbindir/*
@@ -80,6 +87,8 @@ make %?_smp_mflags install DESTDIR="$RPM_BUILD_ROOT" GNUSTEP_INSTALLATION_DOMAIN
 %_libdir/GNUstep/OCSTypeModels
 %_libdir/GNUstep/Libraries/Resources/NGCards
 %_libdir/GNUstep/Frameworks/SOGo.framework
+/lib/systemd/system/*.service
+/lib/systemd/system/*.timer
 %exclude %_libdir/GNUstep/Frameworks/*/Versions/*/Headers
 
 %files devel
