@@ -4,16 +4,16 @@
 %define debug_package %nil
 
 Name: sogo
-Version: 3.2.9
+Version: 3.2.10
 %if "%scmrev" == ""
 %if "%beta" != ""
-Release: 0.%beta.1
+Release: 1.%beta.1
 %else
 Release: 1
 %endif
 Source0: http://www.sogo.nu/files/downloads/SOGo/Sources/SOGo-%version%beta.tar.gz
 %else
-Release: 0.%scmrev.1ark
+Release: 1.%scmrev.1ark
 Source0: SOGo-%scmrev.tar.xz
 %endif
 Source10: sogo-email-alarms.service
