@@ -10,3 +10,6 @@ Type=forking
 ExecStart=/usr/sbin/sogod -WOWorkersCount ${PREFORK} -WOPidFile /run/sogo/sogo.pid -WOLogFile /var/log/sogo/sogo.log
 PIDFile=/run/sogo/sogo.pid
 User=sogo
+
+[Install]
+WantedBy=multi-user.target
