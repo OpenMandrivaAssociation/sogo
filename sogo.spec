@@ -34,6 +34,7 @@ BuildRequires: pkgconfig(libcurl)
 BuildRequires: pkgconfig(libsasl2)
 BuildRequires: openssl-devel
 BuildRequires: openldap-devel
+BuildRequires: pkgconfig(libxml-2.0)
 
 %description
 SOGo is fully supported and trusted groupware server with a focus
