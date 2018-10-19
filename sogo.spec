@@ -31,6 +31,7 @@ BuildRequires: gnustep-base-devel gnustep-gui-devel
 BuildRequires: gcc-objc sope-devel
 BuildRequires: pkgconfig(libmemcached)
 BuildRequires: pkgconfig(libcurl)
+BuildRequires: pkgconfig(libsasl2)
 
 %description
 SOGo is fully supported and trusted groupware server with a focus
