@@ -32,6 +32,7 @@ BuildRequires: gcc-objc sope-devel
 BuildRequires: pkgconfig(libmemcached)
 BuildRequires: pkgconfig(libcurl)
 BuildRequires: pkgconfig(libsasl2)
+BuildRequires: openssl-devel
 BuildRequires: openldap-devel
 
 %description
