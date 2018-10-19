@@ -32,6 +32,7 @@ BuildRequires: gcc-objc sope-devel
 BuildRequires: pkgconfig(libmemcached)
 BuildRequires: pkgconfig(libcurl)
 BuildRequires: pkgconfig(libsasl2)
+BuildRequires: openldap-devel
 
 %description
 SOGo is fully supported and trusted groupware server with a focus
