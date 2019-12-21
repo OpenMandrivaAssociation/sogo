@@ -4,7 +4,7 @@
 %define debug_package %nil
 
 Name: sogo
-Version:	4.1.1
+Version:	4.2.0
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release:	1
