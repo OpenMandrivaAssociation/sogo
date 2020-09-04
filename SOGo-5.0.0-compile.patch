@@ -1,0 +1,33 @@
+diff -up SOGo-5.0.0/SoObjects/Mailer/SOGoMailObject.h.omv~ SOGo-5.0.0/SoObjects/Mailer/SOGoMailObject.h
+--- SOGo-5.0.0/SoObjects/Mailer/SOGoMailObject.h.omv~	2020-09-04 19:43:42.581667837 +0200
++++ SOGo-5.0.0/SoObjects/Mailer/SOGoMailObject.h	2020-09-04 19:43:52.058491235 +0200
+@@ -51,7 +51,7 @@
+ 
+ @class WOResponse;
+ 
+-NSArray *SOGoMailCoreInfoKeys;
++extern NSArray *SOGoMailCoreInfoKeys;
+ 
+ @interface SOGoMailObject : SOGoMailBaseObject
+ {
+diff -up SOGo-5.0.0/SoObjects/Mailer/SOGoMailObject.m.omv~ SOGo-5.0.0/SoObjects/Mailer/SOGoMailObject.m
+diff -up SOGo-5.0.0/SoObjects/SOGo/SOGoZipArchiver.h.omv~ SOGo-5.0.0/SoObjects/SOGo/SOGoZipArchiver.h
+--- SOGo-5.0.0/SoObjects/SOGo/SOGoZipArchiver.h.omv~	2020-09-04 19:42:04.483449817 +0200
++++ SOGo-5.0.0/SoObjects/SOGo/SOGoZipArchiver.h	2020-09-04 19:42:58.047613025 +0200
+@@ -21,8 +21,15 @@
+ #ifndef SOGOZIPARCHIVER_H
+ #define SOGOZIPARCHIVER_H
+ 
++/* libzip's attribute use is incompatible with Objective-C */
++#define _Nullable
++#define _Nonnull
++
+ #include <zip.h>
+ 
++#undef _Nullable
++#undef _Nonnull
++
+ @interface SOGoZipArchiver : NSObject
+ {
+   /* we use zip instead of zip_t for backward compatibility */
+diff -up SOGo-5.0.0/SoObjects/SOGo/SOGoZipArchiver.m.omv~ SOGo-5.0.0/SoObjects/SOGo/SOGoZipArchiver.m

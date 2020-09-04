@@ -4,7 +4,7 @@
 %define debug_package %nil
 
 Name: sogo
-Version:	4.3.0
+Version:	5.0.0
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release:	1
@@ -22,6 +22,7 @@ Source12: sogo-expire-sessions.service
 Source13: sogo-expire-sessions.timer
 Source14: sogo.service
 Source1000: %{name}.rpmlintrc
+Patch0: SOGo-5.0.0-compile.patch
 Summary: The SOGo groupware server
 URL: http://sogo.nu/
 License: GPL/LGPL v2+
@@ -32,7 +33,7 @@ BuildRequires: gcc-objc sope-devel
 BuildRequires: pkgconfig(libmemcached)
 BuildRequires: pkgconfig(libcurl)
 BuildRequires: pkgconfig(libsasl2)
-BuildRequires: openssl-devel
+BuildRequires: pkgconfig(openssl)
 BuildRequires: openldap-devel
 BuildRequires: pkgconfig(libxml-2.0)
 
@@ -67,7 +68,7 @@ prog sogo = {
 }
 
 %prep
-%setup -q -n SOGo-%version
+%autosetup -p1 -n SOGo-%version
 # Not autoconf, even though it looks similar
 # --enable-debug (the default) uses -O0, we don't want that
 ./configure --disable-debug
