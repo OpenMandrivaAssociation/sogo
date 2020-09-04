@@ -30,12 +30,15 @@ Group: System/Servers
 BuildRequires: gnustep-make >= 2.6.2-3
 BuildRequires: gnustep-base-devel gnustep-gui-devel
 BuildRequires: gcc-objc sope-devel
+BuildRequires: hostname
 BuildRequires: pkgconfig(libmemcached)
 BuildRequires: pkgconfig(libcurl)
 BuildRequires: pkgconfig(libsasl2)
 BuildRequires: pkgconfig(openssl)
+BuildRequires: pkgconfig(libzip)
 BuildRequires: openldap-devel
 BuildRequires: pkgconfig(libxml-2.0)
+BuildRequires: pkgconfig(libsodium)
 
 %description
 SOGo is fully supported and trusted groupware server with a focus
