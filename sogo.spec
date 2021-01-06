@@ -4,7 +4,7 @@
 %define debug_package %nil
 
 Name: sogo
-Version:	5.0.0
+Version:	5.0.1
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release:	1
@@ -22,7 +22,6 @@ Source12: sogo-expire-sessions.service
 Source13: sogo-expire-sessions.timer
 Source14: sogo.service
 Source1000: %{name}.rpmlintrc
-Patch0: SOGo-5.0.0-compile.patch
 Summary: The SOGo groupware server
 URL: http://sogo.nu/
 License: GPL/LGPL v2+
