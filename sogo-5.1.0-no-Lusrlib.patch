@@ -1,0 +1,99 @@
+diff -up SOGo-5.1.0/ActiveSync/common.make.omv~ SOGo-5.1.0/ActiveSync/common.make
+--- SOGo-5.1.0/ActiveSync/common.make.omv~	2021-04-12 23:00:07.587426134 +0200
++++ SOGo-5.1.0/ActiveSync/common.make	2021-04-12 23:00:11.307403596 +0200
+@@ -8,8 +8,6 @@ BUNDLE_INSTALL_DIR   = $(SOGO_LIBDIR)
+ WOBUNDLE_EXTENSION   = $(BUNDLE_EXTENSION)
+ WOBUNDLE_INSTALL_DIR = $(BUNDLE_INSTALL_DIR)
+ 
+-# SYSTEM_LIB_DIR += -L/usr/local/lib -L/usr/lib
+-
+ ADDITIONAL_INCLUDE_DIRS += \
+ 	-I.. \
+ 	-I../.. \
+diff -up SOGo-5.1.0/configure.omv~ SOGo-5.1.0/configure
+--- SOGo-5.1.0/configure.omv~	2021-04-12 23:00:14.284052289 +0200
++++ SOGo-5.1.0/configure	2021-04-12 23:00:22.467336483 +0200
+@@ -51,7 +51,7 @@ fi
+ 
+ 
+ NGSTREAMS_DIR="./sope-core/NGStreams"
+-LINK_SYSLIBDIRS="-L/usr/local/pgsql/lib -L/usr/local/lib -L/usr/lib"
++LINK_SYSLIBDIRS=""
+ 
+ # ******************** usage ********************
+ 
+diff -up SOGo-5.1.0/SOPE/NGCards/GNUmakefile.p.omv~ SOGo-5.1.0/SOPE/NGCards/GNUmakefile.p
+diff -up SOGo-5.1.0/SOPE/NGCards/GNUmakefile.preamble.omv~ SOGo-5.1.0/SOPE/NGCards/GNUmakefile.preamble
+--- SOGo-5.1.0/SOPE/NGCards/GNUmakefile.preamble.omv~	2021-04-12 23:00:59.643784802 +0200
++++ SOGo-5.1.0/SOPE/NGCards/GNUmakefile.preamble	2021-04-12 23:01:05.313752183 +0200
+@@ -46,13 +46,6 @@ ADDITIONAL_LIB_DIRS += \
+ 	$(foreach dir,$(DEP_DIRS),-F$(GNUSTEP_BUILD_DIR)/$(dir))
+ endif
+ 
+-ifeq ($(findstring _64, $(GNUSTEP_TARGET_CPU)), _64)
+-SYSTEM_LIB_DIR += -L/usr/local/lib64 -L/usr/lib64
+-else
+-SYSTEM_LIB_DIR += -L/usr/local/lib -L/usr/lib
+-endif
+-
+-
+ # Apple
+ 
+ ifeq ($(FOUNDATION_LIB),apple)
+diff -up SOGo-5.1.0/SOPE/NGCards/samples/GNUmakefile.preamble.omv~ SOGo-5.1.0/SOPE/NGCards/samples/GNUmakefile.preamble
+--- SOGo-5.1.0/SOPE/NGCards/samples/GNUmakefile.preamble.omv~	2021-04-12 23:01:13.640371263 +0200
++++ SOGo-5.1.0/SOPE/NGCards/samples/GNUmakefile.preamble	2021-04-12 23:01:15.867025267 +0200
+@@ -60,5 +60,3 @@ else
+ ADDITIONAL_LIB_DIRS += \
+ 	$(foreach dir,$(DEP_DIRS),-F$(GNUSTEP_BUILD_DIR)/$(dir))
+ endif
+-
+-SYSTEM_LIB_DIR += -L/usr/local/lib -L/usr/lib
+diff -up SOGo-5.1.0/SOPE/NGCards/versitCardsSaxDriver/GNUmakefile.p.omv~ SOGo-5.1.0/SOPE/NGCards/versitCardsSaxDriver/GNUmakefile.p
+diff -up SOGo-5.1.0/SOPE/NGCards/versitCardsSaxDriver/GNUmakefile.preamble.omv~ SOGo-5.1.0/SOPE/NGCards/versitCardsSaxDriver/GNUmakefile.preamble
+--- SOGo-5.1.0/SOPE/NGCards/versitCardsSaxDriver/GNUmakefile.preamble.omv~	2021-04-12 23:00:37.027250027 +0200
++++ SOGo-5.1.0/SOPE/NGCards/versitCardsSaxDriver/GNUmakefile.preamble	2021-04-12 23:00:47.750520467 +0200
+@@ -42,9 +42,3 @@ else
+ ADDITIONAL_LIB_DIRS += \
+ 	$(foreach dir,$(DEP_DIRS),-F$(GNUSTEP_BUILD_DIR)/$(dir))
+ endif
+-
+-ifeq ($(findstring _64, $(GNUSTEP_TARGET_CPU)), _64)
+-SYSTEM_LIB_DIR += -L/usr/local/lib64 -L/usr/lib64
+-else
+-SYSTEM_LIB_DIR += -L/usr/local/lib -L/usr/lib
+-endif
+diff -up SOGo-5.1.0/Tests/Integration/GNUmakefile.preamble.omv~ SOGo-5.1.0/Tests/Integration/GNUmakefile.preamble
+diff -up SOGo-5.1.0/UI/Common/GNUmakefile.preamble.omv~ SOGo-5.1.0/UI/Common/GNUmakefile.preamble
+--- SOGo-5.1.0/UI/Common/GNUmakefile.preamble.omv~	2021-04-12 22:59:22.267707660 +0200
++++ SOGo-5.1.0/UI/Common/GNUmakefile.preamble	2021-04-12 22:59:27.537674244 +0200
+@@ -11,8 +11,6 @@ endif
+ 
+ CommonUI_LIB_DIRS += -L$(RELBUILD_DIR_libSOGoUI)
+ 
+-ADDITIONAL_LIB_DIRS += -L/usr/local/lib -L/usr/lib
+-
+ CommonUI_BUNDLE_LIBS += \
+ 	-lSOGoUI	\
+ 	-lNGObjWeb
+diff -up SOGo-5.1.0/UI/common.make.omv~ SOGo-5.1.0/UI/common.make
+--- SOGo-5.1.0/UI/common.make.omv~	2021-04-12 22:59:51.454191528 +0200
++++ SOGo-5.1.0/UI/common.make	2021-04-12 22:59:59.737473971 +0200
+@@ -36,8 +36,6 @@ ADDITIONAL_LIB_DIRS += 				\
+ 	-L$(RELBUILD_DIR_libSOGoUI)
+ endif
+ 
+-SYSTEM_LIB_DIR += -L/usr/local/lib -L/usr/lib
+-
+ BUNDLE_LIBS += \
+ 	-lSOGoUI	\
+ 	-lSOGo
+diff -up SOGo-5.1.0/UI/SOGoUI/GNUmakefile.preamble.omv~ SOGo-5.1.0/UI/SOGoUI/GNUmakefile.preamble
+--- SOGo-5.1.0/UI/SOGoUI/GNUmakefile.preamble.omv~	2021-04-12 22:59:36.617617096 +0200
++++ SOGo-5.1.0/UI/SOGoUI/GNUmakefile.preamble	2021-04-12 22:59:40.214261274 +0200
+@@ -13,5 +13,4 @@ libSOGoUI_LIBRARIES_DEPEND_UPON += \
+ 	-lSaxObjC -lSOGo \
+         $(BASE_LIBS)
+ 
+-SYSTEM_LIB_DIR += -L/usr/local/lib -L/usr/lib
+ ADDITIONAL_INCLUDE_DIRS += -I../../SoObjects

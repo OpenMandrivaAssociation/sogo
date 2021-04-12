@@ -4,7 +4,7 @@
 %define debug_package %nil
 
 Name: sogo
-Version:	5.0.1
+Version:	5.1.0
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release:	1
@@ -22,13 +22,15 @@ Source12: sogo-expire-sessions.service
 Source13: sogo-expire-sessions.timer
 Source14: sogo.service
 Source1000: %{name}.rpmlintrc
+Patch0: sogo-5.1.0-no-Lusrlib.patch
 Summary: The SOGo groupware server
 URL: http://sogo.nu/
 License: GPL/LGPL v2+
 Group: System/Servers
 BuildRequires: gnustep-make >= 2.6.2-3
 BuildRequires: gnustep-base-devel gnustep-gui-devel
-BuildRequires: gcc-objc sope-devel
+BuildRequires: pkgconfig(libobjc)
+BuildRequires: sope-devel
 BuildRequires: hostname
 BuildRequires: pkgconfig(libmemcached)
 BuildRequires: pkgconfig(libcurl)
@@ -76,11 +78,10 @@ prog sogo = {
 ./configure --disable-debug
 
 %build
-make %?_smp_mflags GNUSTEP_INSTALLATION_DOMAIN=SYSTEM
+%make_build GNUSTEP_INSTALLATION_DOMAIN=SYSTEM messages=yes
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make %?_smp_mflags install DESTDIR="$RPM_BUILD_ROOT" GNUSTEP_INSTALLATION_DOMAIN=SYSTEM
+%make_install GNUSTEP_INSTALLATION_DOMAIN=SYSTEM
 mkdir -p %{buildroot}/lib/systemd/system
 cp %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{buildroot}/lib/systemd/system/
 mkdir -p %{buildroot}%{_sysconfdir}/tmpfiles.d
