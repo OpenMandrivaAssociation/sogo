@@ -1,19 +1,17 @@
 %define beta %nil
 %define scmrev %nil
-# Apparently we can't create debug packages for objective-c
-%define debug_package %nil
 
 Name: sogo
-Version:	5.1.0
+Version: 5.1.0
 %if "%scmrev" == ""
 %if "%beta" != ""
-Release:	1
+Release: 2
 %else
-Release:	1
+Release: 1
 %endif
 Source0: http://www.sogo.nu/files/downloads/SOGo/Sources/SOGo-%version%beta.tar.gz
 %else
-Release:	1
+Release: 1
 Source0: SOGo-%scmrev.tar.xz
 %endif
 Source10: sogo-email-alarms.service
@@ -40,6 +38,7 @@ BuildRequires: pkgconfig(libzip)
 BuildRequires: openldap-devel
 BuildRequires: pkgconfig(libxml-2.0)
 BuildRequires: pkgconfig(libsodium)
+BuildRequires: systemd-rpm-macros
 
 %description
 SOGo is fully supported and trusted groupware server with a focus
@@ -58,21 +57,14 @@ production environments where thousands of users are involved.
 %package devel
 Summary: Development files for SOGo
 Group: Development/C
-Requires: %name = %version-%release
+Requires: %{name} = %{EVRD}
 
 %description devel
 Development files for SOGo -- needed if you wish to develop
 or compile SOGo plugins.
 
-%track
-prog sogo = {
-	version = %{version}
-	url = http://www.sogo.nu/downloads/backend.html
-	regex = SOGo-(__VER__)\.tar\.gz
-}
-
 %prep
-%autosetup -p1 -n SOGo-%version
+%autosetup -p1 -n SOGo-%{version}
 # Not autoconf, even though it looks similar
 # --enable-debug (the default) uses -O0, we don't want that
 ./configure --disable-debug
@@ -82,31 +74,32 @@ prog sogo = {
 
 %install
 %make_install GNUSTEP_INSTALLATION_DOMAIN=SYSTEM
-mkdir -p %{buildroot}/lib/systemd/system
-cp %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{buildroot}/lib/systemd/system/
-mkdir -p %{buildroot}%{_sysconfdir}/tmpfiles.d
-cat >%{buildroot}%{_sysconfdir}/tmpfiles.d/sogo.conf <<EOF
+mkdir -p %{buildroot}%{_unitdir}
+cp %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{buildroot}%{_unitdir}
+
+mkdir -p %{buildroot}%{_tmpfilesdir}
+cat >%{buildroot}%{_tmpfilesdir}/sogo.conf <<EOF
 d /run/sogo 0775 sogo sogo -
 EOF
 
 %files
 %_sbindir/*
-%_libdir/sogo
-%_libdir/GNUstep/WOxElemBuilders-4.9
-%_libdir/GNUstep/SaxMappings
-%_libdir/GNUstep/SaxDrivers-4.9
-%_libdir/GNUstep/SOGo
-%_libdir/GNUstep/OCSTypeModels
-%_libdir/GNUstep/Libraries/Resources/NGCards
-%_libdir/GNUstep/Frameworks/SOGo.framework
-/lib/systemd/system/*.service
-/lib/systemd/system/*.timer
-%_sysconfdir/tmpfiles.d/sogo.conf
-%exclude %_libdir/GNUstep/Frameworks/*/Versions/*/Headers
+%{_libdir}/sogo
+%{_libdir}/GNUstep/WOxElemBuilders-4.9
+%{_libdir}/GNUstep/SaxMappings
+%{_libdir}/GNUstep/SaxDrivers-4.9
+%{_libdir}/GNUstep/SOGo
+%{_libdir}/GNUstep/OCSTypeModels
+%{_libdir}/GNUstep/Libraries/Resources/NGCards
+%{_libdir}/GNUstep/Frameworks/SOGo.framework
+%{_unitdir}/*.service
+%{_unitdir}/*.timer
+%{_tmpfilesdir}/sogo.conf
+%exclude %{_libdir}/GNUstep/Frameworks/*/Versions/*/Headers
 
 %files devel
-%_includedir/NGCards
-%_includedir/SOGo
-%_includedir/SOGoUI
-%_includedir/GDLContentStore
-%_libdir/GNUstep/Frameworks/*/Versions/*/Headers
+%{_includedir}/NGCards
+%{_includedir}/SOGo
+%{_includedir}/SOGoUI
+%{_includedir}/GDLContentStore
+%{_libdir}/GNUstep/Frameworks/*/Versions/*/Headers
