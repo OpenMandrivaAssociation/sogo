@@ -2,14 +2,14 @@
 %define scmrev %nil
 
 Name: sogo
-Version: 5.1.1
+Version: 5.5.0
 %if "%scmrev" == ""
 %if "%beta" != ""
-Release: 1
+Release: 0.%{beta}.1
 %else
 Release: 1
 %endif
-Source0: http://www.sogo.nu/files/downloads/SOGo/Sources/SOGo-%version%beta.tar.gz
+Source0: https://packages.inverse.ca/SOGo/sources/SOGo-%version%beta.tar.gz
 %else
 Release: 1
 Source0: SOGo-%scmrev.tar.xz
@@ -38,6 +38,7 @@ BuildRequires: pkgconfig(libzip)
 BuildRequires: openldap-devel
 BuildRequires: pkgconfig(libxml-2.0)
 BuildRequires: pkgconfig(libsodium)
+BuildRequires: pkgconfig(libytnef) >= 2.0
 BuildRequires: systemd-rpm-macros
 
 %description
