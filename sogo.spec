@@ -2,16 +2,16 @@
 %define scmrev %nil
 
 Name: sogo
-Version: 5.5.0
+Version: 5.8.0
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release: 0.%{beta}.1
 %else
-Release: 2
+Release: 1
 %endif
-Source0: https://packages.inverse.ca/SOGo/sources/SOGo-%version%beta.tar.gz
+Source0: https://packages.sogo.nu/sources/SOGo-%version%beta.tar.gz
 %else
-Release: 2
+Release: 1
 Source0: SOGo-%scmrev.tar.xz
 %endif
 Source10: sogo-email-alarms.service
@@ -21,6 +21,7 @@ Source13: sogo-expire-sessions.timer
 Source14: sogo.service
 Source1000: %{name}.rpmlintrc
 Patch0: sogo-5.1.0-no-Lusrlib.patch
+Patch1: sogo-5.8.0-compile.patch
 Summary: The SOGo groupware server
 URL: http://sogo.nu/
 License: GPL/LGPL v2+
@@ -82,6 +83,10 @@ mkdir -p %{buildroot}%{_tmpfilesdir}
 cat >%{buildroot}%{_tmpfilesdir}/sogo.conf <<EOF
 d /run/sogo 0775 sogo sogo -
 EOF
+
+%if "%{_sbindir}" != "%{_prefix}/sbin"
+mv %{buildroot}%{_prefix}/sbin %{buildroot}%{_sbindir}
+%endif
 
 %files
 %_sbindir/*

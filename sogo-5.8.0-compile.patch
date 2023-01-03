@@ -1,0 +1,12 @@
+diff -up SOGo-5.8.0/SoObjects/SOGo/SQLSource.m.omv~ SOGo-5.8.0/SoObjects/SOGo/SQLSource.m
+--- SOGo-5.8.0/SoObjects/SOGo/SQLSource.m.omv~	2023-01-03 15:13:13.062139738 +0100
++++ SOGo-5.8.0/SoObjects/SOGo/SQLSource.m	2023-01-03 15:13:21.880204637 +0100
+@@ -488,7 +488,7 @@
+ 
+ - (BOOL) isConnected
+ {
+-  return [self connection];
++  return [self connection] != nil;
+ }
+ 
+ - (void) releaseConnection: (id) connection
