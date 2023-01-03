@@ -7,7 +7,7 @@ Version: 5.8.0
 %if "%beta" != ""
 Release: 0.%{beta}.1
 %else
-Release: 1
+Release: 2
 %endif
 Source0: https://packages.sogo.nu/sources/SOGo-%version%beta.tar.gz
 %else
@@ -19,6 +19,7 @@ Source11: sogo-email-alarms.timer
 Source12: sogo-expire-sessions.service
 Source13: sogo-expire-sessions.timer
 Source14: sogo.service
+Source15: sogo.sysusers
 Source1000: %{name}.rpmlintrc
 Patch0: sogo-5.1.0-no-Lusrlib.patch
 Patch1: sogo-5.8.0-compile.patch
@@ -88,6 +89,12 @@ EOF
 mv %{buildroot}%{_prefix}/sbin %{buildroot}%{_sbindir}
 %endif
 
+mkdir -p %{buildroot}%{_sysusersdir}
+install -c -m 644 %{S:15} %{buildroot}%{_sysusersdir}/sogo.conf
+
+%pre
+%sysusers_create_package sogo %{S:15}
+
 %files
 %_sbindir/*
 %{_libdir}/sogo
@@ -101,6 +108,7 @@ mv %{buildroot}%{_prefix}/sbin %{buildroot}%{_sbindir}
 %{_unitdir}/*.service
 %{_unitdir}/*.timer
 %{_tmpfilesdir}/sogo.conf
+%{_sysusersdir}/*.conf
 %exclude %{_libdir}/GNUstep/Frameworks/*/Versions/*/Headers
 
 %files devel
