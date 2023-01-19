@@ -7,7 +7,7 @@ Version: 5.8.0
 %if "%beta" != ""
 Release: 0.%{beta}.1
 %else
-Release: 2
+Release: 3
 %endif
 Source0: https://packages.sogo.nu/sources/SOGo-%version%beta.tar.gz
 %else
