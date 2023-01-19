@@ -7,7 +7,7 @@ Version: 5.8.0
 %if "%beta" != ""
 Release: 0.%{beta}.1
 %else
-Release: 3
+Release: 4
 %endif
 Source0: https://packages.sogo.nu/sources/SOGo-%version%beta.tar.gz
 %else
@@ -92,6 +92,9 @@ mv %{buildroot}%{_prefix}/sbin %{buildroot}%{_sbindir}
 mkdir -p %{buildroot}%{_sysusersdir}
 install -c -m 644 %{S:15} %{buildroot}%{_sysusersdir}/sogo.conf
 
+mkdir -p %{buildroot}%{_localstatedir}/log/sogo
+touch %{buildroot}%{_localstatedir}/log/sogo/sogo.log
+
 %pre
 %sysusers_create_package sogo %{S:15}
 
@@ -110,6 +113,8 @@ install -c -m 644 %{S:15} %{buildroot}%{_sysusersdir}/sogo.conf
 %{_tmpfilesdir}/sogo.conf
 %{_sysusersdir}/*.conf
 %exclude %{_libdir}/GNUstep/Frameworks/*/Versions/*/Headers
+%attr(755,sogo,sogo) %dir %{_localstatedir}/log/sogo
+%ghost %attr(644,sogo,sogo) %{_localstatedir}/log/sogo/sogo.log
 
 %files devel
 %{_includedir}/NGCards
