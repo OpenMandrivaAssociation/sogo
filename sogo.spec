@@ -7,7 +7,7 @@ Version: 5.8.0
 %if "%beta" != ""
 Release: 0.%{beta}.1
 %else
-Release: 5
+Release: 6
 %endif
 Source0: https://packages.sogo.nu/sources/SOGo-%version%beta.tar.gz
 %else
@@ -96,6 +96,9 @@ mkdir -p %{buildroot}%{_localstatedir}/log/sogo
 touch %{buildroot}%{_localstatedir}/log/sogo/sogo.log
 mkdir -p %{buildroot}%{_localstatedir}/spool/sogo
 
+mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d
+install -m 644 Scripts/logrotate %{buildroot}%{_sysconfdir}/logrotate.d/sogo
+
 %pre
 %sysusers_create_package sogo %{S:15}
 
@@ -113,6 +116,7 @@ mkdir -p %{buildroot}%{_localstatedir}/spool/sogo
 %{_unitdir}/*.timer
 %{_tmpfilesdir}/sogo.conf
 %{_sysusersdir}/*.conf
+%config(noreplace) %{_sysconfdir}/logrotate.d/sogo
 %exclude %{_libdir}/GNUstep/Frameworks/*/Versions/*/Headers
 %attr(755,sogo,sogo) %dir %{_localstatedir}/log/sogo
 %ghost %attr(644,sogo,sogo) %{_localstatedir}/log/sogo/sogo.log
