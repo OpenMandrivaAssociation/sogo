@@ -18,8 +18,10 @@ Source10: sogo-email-alarms.service
 Source11: sogo-email-alarms.timer
 Source12: sogo-expire-sessions.service
 Source13: sogo-expire-sessions.timer
-Source14: sogo.service
-Source15: sogo.sysusers
+Source14: sogo-update-autoreply.service
+Source15: sogo-update-autoreply.timer
+Source16: sogo.service
+Source17: sogo.sysusers
 Source1000: %{name}.rpmlintrc
 Patch0: sogo-5.1.0-no-Lusrlib.patch
 Patch1: sogo-5.8.0-compile.patch
@@ -79,7 +81,7 @@ or compile SOGo plugins.
 %install
 %make_install GNUSTEP_INSTALLATION_DOMAIN=SYSTEM
 mkdir -p %{buildroot}%{_unitdir}
-cp %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14} %{buildroot}%{_unitdir}
+cp %{S:10} %{S:11} %{S:12} %{S:13} %{S:14} %{S:15} %{S:16} %{buildroot}%{_unitdir}
 
 mkdir -p %{buildroot}%{_tmpfilesdir}
 cat >%{buildroot}%{_tmpfilesdir}/sogo.conf <<EOF
@@ -91,7 +93,7 @@ mv %{buildroot}%{_prefix}/sbin %{buildroot}%{_sbindir}
 %endif
 
 mkdir -p %{buildroot}%{_sysusersdir}
-install -c -m 644 %{S:15} %{buildroot}%{_sysusersdir}/sogo.conf
+install -c -m 644 %{S:17} %{buildroot}%{_sysusersdir}/sogo.conf
 
 mkdir -p %{buildroot}%{_localstatedir}/log/sogo
 touch %{buildroot}%{_localstatedir}/log/sogo/sogo.log
@@ -101,7 +103,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d
 install -m 644 Scripts/logrotate %{buildroot}%{_sysconfdir}/logrotate.d/sogo
 
 %pre
-%sysusers_create_package sogo %{S:15}
+%sysusers_create_package sogo %{S:17}
 
 %files
 %_sbindir/*

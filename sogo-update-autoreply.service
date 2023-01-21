@@ -1,0 +1,7 @@
+[Unit]
+Description=Update SOGo autoreplies
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/sogo-tool update-autoreply -p /etc/sogo/sieve.creds
+User=sogo

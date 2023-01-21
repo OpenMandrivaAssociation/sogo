@@ -1,0 +1,8 @@
+[Unit]
+Description=Automatically update SOGo auto replies
+
+[Timer]
+OnUnitActiveSec=5m
+
+[Install]
+WantedBy=timers.target
