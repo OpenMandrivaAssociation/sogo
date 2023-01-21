@@ -1,0 +1,15 @@
+diff -up SOGo-5.8.0/Tools/SOGoToolUpdateAutoReply.m.omv~ SOGo-5.8.0/Tools/SOGoToolUpdateAutoReply.m
+--- SOGo-5.8.0/Tools/SOGoToolUpdateAutoReply.m.omv~	2023-01-21 23:28:12.652121498 +0100
++++ SOGo-5.8.0/Tools/SOGoToolUpdateAutoReply.m	2023-01-21 23:32:53.806923846 +0100
+@@ -355,8 +355,10 @@
+       authpwd = [cf password];
+     }
+ 
++  //NSLog(@"Credentials: %@, %@, max = %d", authname, authpwd, max);
++
+   /* DEPRECATED: this is only kept around to avoid breaking existing setups */
+-  if (max > 0)
++  if (max > 1)
+     {
+       /* assume we got the creds directly on the cli */
+       creds = [sanitizedArguments objectAtIndex: 0];

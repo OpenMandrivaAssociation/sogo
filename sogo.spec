@@ -23,6 +23,7 @@ Source15: sogo.sysusers
 Source1000: %{name}.rpmlintrc
 Patch0: sogo-5.1.0-no-Lusrlib.patch
 Patch1: sogo-5.8.0-compile.patch
+Patch2: sogo-5.8.0-fix-sogo-tool-update-autoreply.patch
 Summary: The SOGo groupware server
 URL: http://sogo.nu/
 License: GPL/LGPL v2+
