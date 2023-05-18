@@ -7,11 +7,11 @@ Version: 5.8.0
 %if "%beta" != ""
 Release: 0.%{beta}.1
 %else
-Release: 7
+Release: 8
 %endif
 Source0: https://packages.sogo.nu/sources/SOGo-%version%beta.tar.gz
 %else
-Release: 2
+Release: 3
 Source0: SOGo-%scmrev.tar.xz
 %endif
 Source10: sogo-email-alarms.service
