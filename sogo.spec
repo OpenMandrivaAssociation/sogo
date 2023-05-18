@@ -1,19 +1,17 @@
-%global optflags %{optflags} -Wno-incompatible-function-pointer-types
-
 %define beta %nil
 %define scmrev %nil
 
 Name: sogo
-Version: 5.8.0
+Version: 5.8.2
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release: 0.%{beta}.1
 %else
-Release: 8
+Release: 1
 %endif
 Source0: https://packages.sogo.nu/sources/SOGo-%version%beta.tar.gz
 %else
-Release: 3
+Release: 1
 Source0: SOGo-%scmrev.tar.xz
 %endif
 Source10: sogo-email-alarms.service
@@ -28,6 +26,7 @@ Source1000: %{name}.rpmlintrc
 Patch0: sogo-5.1.0-no-Lusrlib.patch
 Patch1: sogo-5.8.0-compile.patch
 Patch2: sogo-5.8.0-fix-sogo-tool-update-autoreply.patch
+Patch3: SOGo-5.8.2-clang16.patch
 Summary: The SOGo groupware server
 URL: http://sogo.nu/
 License: GPL/LGPL v2+

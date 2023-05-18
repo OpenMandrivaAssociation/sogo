@@ -1,0 +1,36 @@
+diff -up SOGo-5.8.2/SoObjects/Mailer/SOGoMailFolder.m.omv~ SOGo-5.8.2/SoObjects/Mailer/SOGoMailFolder.m
+--- SOGo-5.8.2/SoObjects/Mailer/SOGoMailFolder.m.omv~	2023-05-18 22:36:15.109525292 +0200
++++ SOGo-5.8.2/SoObjects/Mailer/SOGoMailFolder.m	2023-05-18 22:37:12.452047936 +0200
+@@ -104,7 +104,7 @@ static NSComparisonResult _compareFetchR
+   return [modseq1 compare: modseq2];
+ }
+ 
+-static NSInteger _compareFetchResultsByUID (id entry1, id entry2, NSDictionary *uids)
++static NSComparisonResult _compareFetchResultsByUID (id entry1, id entry2, void *uids)
+ {
+   NSString *uid1, *uid2;
+   NSUInteger pos1, pos2;
+diff -up SOGo-5.8.2/SoObjects/SOGo/SOGoGCSFolder.m.omv~ SOGo-5.8.2/SoObjects/SOGo/SOGoGCSFolder.m
+--- SOGo-5.8.2/SoObjects/SOGo/SOGoGCSFolder.m.omv~	2023-05-18 22:32:34.758536698 +0200
++++ SOGo-5.8.2/SoObjects/SOGo/SOGoGCSFolder.m	2023-05-18 22:34:08.565378962 +0200
+@@ -150,7 +150,7 @@ static NSArray *childRecordFields = nil;
+   if ([pathElements count] > 1)
+     ocsName = [pathElements objectAtIndex: 1];
+   else
+-    ocsName = [[context request] isMacOSXVenturaCalendarApp] ? @"Personal" : @"personal";
++    ocsName = /*[[context request] isMacOSXVenturaCalendarApp] ? @"Personal" :*/ @"personal";
+ 
+   path = [NSString stringWithFormat: @"/Users/%@/%@/%@",
+ 		   login, [pathElements objectAtIndex: 0], ocsName];
+diff -up SOGo-5.8.2/SoObjects/SOGo/SOGoMailer.m.omv~ SOGo-5.8.2/SoObjects/SOGo/SOGoMailer.m
+--- SOGo-5.8.2/SoObjects/SOGo/SOGoMailer.m.omv~	2023-05-18 22:34:48.918743358 +0200
++++ SOGo-5.8.2/SoObjects/SOGo/SOGoMailer.m	2023-05-18 22:35:22.043043310 +0200
+@@ -154,7 +154,7 @@
+     {
+       ASSIGN (mailingMechanism, [dd mailingMechanism]);
+       ASSIGN (smtpServer, [dd smtpServer]);
+-      smtpMasterUserEnabled = [dd smtpMasterUserEnabled];
++      ASSIGN (smtpMasterUserEnabled , [dd smtpMasterUserEnabled]);
+       ASSIGN (smtpMasterUserUsername, [dd smtpMasterUserUsername]);
+       ASSIGN (smtpMasterUserPassword, [dd smtpMasterUserPassword]);
+       ASSIGN (authenticationType,
