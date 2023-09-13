@@ -2,7 +2,7 @@
 %define scmrev %nil
 
 Name: sogo
-Version: 5.8.2
+Version: 5.8.4
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release: 0.%{beta}.1
@@ -41,7 +41,7 @@ BuildRequires: pkgconfig(libcurl)
 BuildRequires: pkgconfig(libsasl2)
 BuildRequires: pkgconfig(openssl)
 BuildRequires: pkgconfig(libzip)
-BuildRequires: openldap-devel
+BuildRequires: pkgconfig(ldap)
 BuildRequires: pkgconfig(libxml-2.0)
 BuildRequires: pkgconfig(libsodium)
 BuildRequires: pkgconfig(libytnef) >= 2.0
