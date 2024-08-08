@@ -1,0 +1,84 @@
+diff -up SOGo-5.11.0/SOPE/NGCards/iCalYearlyRecurrenceCalculator.m.omv~ SOGo-5.11.0/SOPE/NGCards/iCalYearlyRecurrenceCalculator.m
+--- SOGo-5.11.0/SOPE/NGCards/iCalYearlyRecurrenceCalculator.m.omv~	2024-08-08 14:09:38.687690565 +0200
++++ SOGo-5.11.0/SOPE/NGCards/iCalYearlyRecurrenceCalculator.m	2024-08-08 14:09:57.155914515 +0200
+@@ -45,7 +45,7 @@
+   NSMutableArray *ranges;
+   NSArray *byMonth;
+   NSCalendarDate *firStart, *lastDate, *rStart, *rEnd, *until, *referenceDate, *rTemp;
+-  NSInteger *hoursOfOffset;
++  NSInteger hoursOfOffset;
+   iCalMonthlyRecurrenceCalculator *monthlyCalc;
+   unsigned j, yearIdxInRange, numberOfYearsInRange, count, interval, monthDiff;
+   int diff, repeatCount, currentMonth, origNbDaysInMonth;
+diff -up SOGo-5.11.0/SoObjects/Mailer/SOGoMailFolder.m.omv~ SOGo-5.11.0/SoObjects/Mailer/SOGoMailFolder.m
+--- SOGo-5.11.0/SoObjects/Mailer/SOGoMailFolder.m.omv~	2024-08-08 14:15:11.779732101 +0200
++++ SOGo-5.11.0/SoObjects/Mailer/SOGoMailFolder.m	2024-08-08 14:16:51.632944416 +0200
+@@ -104,10 +104,11 @@ static NSComparisonResult _compareFetchR
+   return [modseq1 compare: modseq2];
+ }
+ 
+-static NSInteger _compareFetchResultsByUID (id entry1, id entry2, NSDictionary *uids)
++static NSComparisonResult _compareFetchResultsByUID (id entry1, id entry2, void *uidsp)
+ {
+   NSString *uid1, *uid2;
+   NSUInteger pos1, pos2;
++  NSDictionary *uids=(NSDictionary*)uidsp;
+ 
+   uid1 = [entry1 objectForKey: @"uid"];
+   uid2 = [entry2 objectForKey: @"uid"];
+diff -up SOGo-5.11.0/SoObjects/SOGo/SOGoMailer.h.omv~ SOGo-5.11.0/SoObjects/SOGo/SOGoMailer.h
+--- SOGo-5.11.0/SoObjects/SOGo/SOGoMailer.h.omv~	2024-08-08 14:12:44.317942331 +0200
++++ SOGo-5.11.0/SoObjects/SOGo/SOGoMailer.h	2024-08-08 14:12:51.878034071 +0200
+@@ -36,7 +36,7 @@
+ {
+   NSString *mailingMechanism;
+   NSString *smtpServer;
+-  BOOL *smtpMasterUserEnabled;
++  BOOL smtpMasterUserEnabled;
+   NSString *smtpMasterUserUsername;
+   NSString *smtpMasterUserPassword;
+   NSString *authenticationType;
+diff -up SOGo-5.11.0/SoObjects/SOGo/SOGoMailer.m.omv~ SOGo-5.11.0/SoObjects/SOGo/SOGoMailer.m
+diff -up SOGo-5.11.0/SoObjects/SOGo/SOGoUserDefaults.h.omv~ SOGo-5.11.0/SoObjects/SOGo/SOGoUserDefaults.h
+--- SOGo-5.11.0/SoObjects/SOGo/SOGoUserDefaults.h.omv~	2024-08-08 14:18:22.666045600 +0200
++++ SOGo-5.11.0/SoObjects/SOGo/SOGoUserDefaults.h	2024-08-08 14:18:31.206148589 +0200
+@@ -156,8 +156,8 @@ extern NSString *SOGoPasswordRecoverySec
+ - (void) setMailComposeFontSize: (int) newValue;
+ - (int) mailComposeFontSize;
+ 
+-- (void) setMailDisplayFullEmail: (BOOL *) newValue;
+-- (BOOL *) mailDisplayFullEmail;
++- (void) setMailDisplayFullEmail: (BOOL) newValue;
++- (BOOL) mailDisplayFullEmail;
+ 
+ - (void) setMailDisplayRemoteInlineImages: (NSString *) newValue;
+ - (NSString *) mailDisplayRemoteInlineImages;
+diff -up SOGo-5.11.0/SoObjects/SOGo/SOGoUserDefaults.m.omv~ SOGo-5.11.0/SoObjects/SOGo/SOGoUserDefaults.m
+--- SOGo-5.11.0/SoObjects/SOGo/SOGoUserDefaults.m.omv~	2024-08-08 14:10:25.576259182 +0200
++++ SOGo-5.11.0/SoObjects/SOGo/SOGoUserDefaults.m	2024-08-08 14:11:50.773292650 +0200
+@@ -89,7 +89,7 @@ NSString *SOGoPasswordRecoverySecondaryE
+       [ud setObject: @"text" forKey: @"SOGoMailComposeMessageType"];
+     }
+ 
+-  [ud setObject: [NSNumber numberWithUnsignedLongLong: [up getCDefaultsSize]] forKey: @"CDefaultsSize"]; // Add c_defaults field size
++  [ud setObject: [NSNumber numberWithUnsignedLongLong: (unsigned long long)[up getCDefaultsSize]] forKey: @"CDefaultsSize"]; // Add c_defaults field size
+   
+   return ud;
+ }
+@@ -634,12 +634,12 @@ NSString *SOGoPasswordRecoverySecondaryE
+   return [self integerForKey: @"SOGoMailComposeFontSize"];
+ }
+ 
+-- (void) setMailDisplayFullEmail: (BOOL *) newValue
++- (void) setMailDisplayFullEmail: (BOOL) newValue
+ {
+   [self setBool: newValue forKey: @"SOGoMailDisplayFullEmail"];
+ }
+ 
+-- (BOOL *) mailDisplayFullEmail;
++- (BOOL) mailDisplayFullEmail;
+ {
+   return [self boolForKey: @"SOGoMailDisplayFullEmail"];
+ }
+diff -up SOGo-5.11.0/UI/PreferencesUI/UIxJSONPreferences.h.omv~ SOGo-5.11.0/UI/PreferencesUI/UIxJSONPreferences.h
+diff -up SOGo-5.11.0/UI/PreferencesUI/UIxJSONPreferences.m.omv~ SOGo-5.11.0/UI/PreferencesUI/UIxJSONPreferences.m
