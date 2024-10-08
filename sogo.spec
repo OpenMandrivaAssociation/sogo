@@ -2,12 +2,12 @@
 %define scmrev %nil
 
 Name: sogo
-Version: 5.11.0
+Version: 5.11.1
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release: 0.%{beta}.1
 %else
-Release: 2
+Release: 1
 %endif
 Source0: https://packages.sogo.nu/sources/SOGo-%version%beta.tar.gz
 %else
