@@ -28,7 +28,7 @@ Patch1: sogo-5.8.0-compile.patch
 Patch2: sogo-5.8.0-fix-sogo-tool-update-autoreply.patch
 Patch3: sogo-5.11.0-compile.patch
 Summary: The SOGo groupware server
-URL: http://sogo.nu/
+URL: https://sogo.nu/
 License: GPL/LGPL v2+
 Group: System/Servers
 BuildRequires: gnustep-make >= 2.6.2-3
