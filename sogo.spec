@@ -5,9 +5,9 @@ Name: sogo
 Version: 5.11.2
 %if "%scmrev" == ""
 %if "%beta" != ""
-Release: 0.%{beta}1
+Release: 0.%{beta}.1
 %else
-Release: 1
+Release: 2
 %endif
 Source0: https://packages.sogo.nu/sources/SOGo-%version%beta.tar.gz
 %else
