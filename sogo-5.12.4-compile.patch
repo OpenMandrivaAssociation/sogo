@@ -1,0 +1,24 @@
+diff -up SOGo-5.12.4/SoObjects/SOGo/SOGoUserDefaults.m.omv~ SOGo-5.12.4/SoObjects/SOGo/SOGoUserDefaults.m
+--- SOGo-5.12.4/SoObjects/SOGo/SOGoUserDefaults.m.omv~	2025-10-08 12:39:29.454992194 +0200
++++ SOGo-5.12.4/SoObjects/SOGo/SOGoUserDefaults.m	2025-10-08 13:02:22.184785633 +0200
+@@ -89,7 +89,7 @@ NSString *SOGoPasswordRecoverySecondaryE
+       [ud setObject: @"text" forKey: @"SOGoMailComposeMessageType"];
+     }
+ 
+-  [ud setObject: [NSNumber numberWithUnsignedLongLong: [up getCDefaultsSize]] forKey: @"CDefaultsSize"]; // Add c_defaults field size
++  [ud setObject: [NSNumber numberWithUnsignedLongLong: (unsigned long long)[up getCDefaultsSize]] forKey: @"CDefaultsSize"]; // Add c_defaults field size
+   
+   return ud;
+ }
+diff -up SOGo-5.12.4/UI/PreferencesUI/UIxJSONPreferences.m.omv~ SOGo-5.12.4/UI/PreferencesUI/UIxJSONPreferences.m
+--- SOGo-5.12.4/UI/PreferencesUI/UIxJSONPreferences.m.omv~	2025-10-08 13:20:12.354088404 +0200
++++ SOGo-5.12.4/UI/PreferencesUI/UIxJSONPreferences.m	2025-10-08 13:20:37.054996723 +0200
+@@ -430,7 +430,7 @@ static SoProduct *preferencesProduct = n
+     [[defaults source] setObject: [defaults mailDisplayRemoteInlineImages] forKey: @"SOGoMailDisplayRemoteInlineImages"];
+ 
+   if (![[defaults source] objectForKey: @"SOGoMailDisplayAttachmentAbove"])
+-    [[defaults source] setObject: [defaults mailDisplayAttachmentAbove] forKey: @"SOGoMailDisplayAttachmentAbove"];
++    [[defaults source] setObject: (id)[defaults mailDisplayAttachmentAbove] forKey: @"SOGoMailDisplayAttachmentAbove"];
+ 
+   if ([[defaults source] objectForKey: @"SOGoMailAutoMarkAsReadDelay"] == nil)
+     [[defaults source] setObject: [NSNumber numberWithInt: [defaults mailAutoMarkAsReadDelay]] forKey: @"SOGoMailAutoMarkAsReadDelay"];

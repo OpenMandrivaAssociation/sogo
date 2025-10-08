@@ -10,15 +10,3 @@ diff -up SOGo-5.12.1/SOPE/GDLContentStore/GCSOpenIdFolder.h.omv~ SOGo-5.12.1/SOP
  
  
  @class NSCalendarDate;
-diff -up SOGo-5.12.1/SoObjects/SOGo/SOGoOpenIdSession.m.omv~ SOGo-5.12.1/SoObjects/SOGo/SOGoOpenIdSession.m
---- SOGo-5.12.1/SoObjects/SOGo/SOGoOpenIdSession.m.omv~	2025-05-27 21:00:38.827220326 +0200
-+++ SOGo-5.12.1/SoObjects/SOGo/SOGoOpenIdSession.m	2025-05-27 21:01:03.874135918 +0200
-@@ -82,7 +82,7 @@ static BOOL SOGoOpenIDDebugEnabled = YES
-         sendDomainInfo = [domainInfo boolValue];
- 
-       
--    userTokenInterval        = [_config objectForKey: @"SOGoOpenIdTokenCheckInterval"];
-+    userTokenInterval        = [_config integerForKey: @"SOGoOpenIdTokenCheckInterval"];
-     [self _loadSessionFromCache: forDomain];
- 
-     if(cacheUpdateNeeded)
