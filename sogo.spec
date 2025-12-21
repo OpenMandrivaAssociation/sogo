@@ -33,6 +33,10 @@ Summary: The SOGo groupware server
 URL: https://sogo.nu/
 License: GPL/LGPL v2+
 Group: System/Servers
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
 BuildRequires: gnustep-make >= 2.6.2-3
 BuildRequires: gnustep-base-devel gnustep-gui-devel
 BuildRequires: pkgconfig(libobjc)
