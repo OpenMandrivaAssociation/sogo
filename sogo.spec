@@ -2,7 +2,7 @@
 %define scmrev %nil
 
 Name: sogo
-Version: 5.12.5
+Version: 5.12.6
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release: 0.%{beta}.1
@@ -29,6 +29,7 @@ Patch2: sogo-5.8.0-fix-sogo-tool-update-autoreply.patch
 Patch3: sogo-5.11.0-compile.patch
 Patch4: sogo-5.12.1-compile.patch
 Patch5: sogo-5.12.4-compile.patch
+Patch6: SOGo-5.12.6-clang22.patch
 Summary: The SOGo groupware server
 URL: https://sogo.nu/
 License: GPL/LGPL v2+

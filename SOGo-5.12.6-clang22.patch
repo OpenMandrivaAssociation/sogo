@@ -1,0 +1,629 @@
+diff -up SOGo-5.12.6/API/SOGoAPIDispatcher.m.omv~ SOGo-5.12.6/API/SOGoAPIDispatcher.m
+--- SOGo-5.12.6/API/SOGoAPIDispatcher.m.omv~	2026-03-19 22:52:44.892030741 +0100
++++ SOGo-5.12.6/API/SOGoAPIDispatcher.m	2026-03-19 22:54:18.781045783 +0100
+@@ -83,7 +83,7 @@ void handle_api_terminate(int signum)
+                                   message, @"error",
+                                   nil];
+   [response setStatus: status];
+-  [response setContent: [msg jsonRepresentation]];
++  [response setContent: [[msg jsonRepresentation] dataUsingEncoding: NSUTF8StringEncoding]];
+ }
+ 
+ - (NSString *) _getActionFromUri: (NSString *) _uri
+@@ -388,7 +388,7 @@ void handle_api_terminate(int signum)
+   
+ 
+   //Make the response
+-  [theResponse setContent: [ret jsonRepresentation]];
++  [theResponse setContent: [[ret jsonRepresentation] dataUsingEncoding: NSUTF8StringEncoding]];
+ 
+   RELEASE(context);
+   RELEASE(pool);
+@@ -396,4 +396,4 @@ void handle_api_terminate(int signum)
+   return nil;
+ }
+ 
+-@end
+\ No newline at end of file
++@end
+diff -up SOGo-5.12.6/SOPE/GDLContentStore/GCSFolder.m.omv~ SOGo-5.12.6/SOPE/GDLContentStore/GCSFolder.m
+--- SOGo-5.12.6/SOPE/GDLContentStore/GCSFolder.m.omv~	2026-03-19 21:37:55.359731253 +0100
++++ SOGo-5.12.6/SOPE/GDLContentStore/GCSFolder.m	2026-03-19 21:39:00.362806209 +0100
+@@ -1146,7 +1146,7 @@ andAttribute: (EOAttribute *)_attribute
+         // Update c_startdate for appointments
+         if ([theComponent respondsToSelector:@selector(startDate)]) {
+           NSTimeInterval t;
+-          startDate = [theComponent startDate];
++          startDate = (NSCalendarDate*)[theComponent startDate];
+           t = [startDate timeIntervalSince1970];
+           if (startDate) {
+             if (t < (long long)INT_MAX && t > (long long)INT_MIN) {
+diff -up SOGo-5.12.6/SoObjects/Appointments/SOGoAppointmentFolder.m.omv~ SOGo-5.12.6/SoObjects/Appointments/SOGoAppointmentFolder.m
+--- SOGo-5.12.6/SoObjects/Appointments/SOGoAppointmentFolder.m.omv~	2026-03-19 22:22:33.634973235 +0100
++++ SOGo-5.12.6/SoObjects/Appointments/SOGoAppointmentFolder.m	2026-03-19 22:22:44.409191909 +0100
+@@ -466,9 +466,9 @@ static Class iCalEventK = nil;
+         {
+           sogoUser = [SOGoUser userWithLogin: theIdentifier roles: nil];
+           if (sogoUser)
+-            allUsers = [NSArray arrayWithObject: sogoUser];
++            allUsers = [NSMutableArray arrayWithObject: sogoUser];
+           else
+-            allUsers = [NSArray array];
++            allUsers = [NSMutableArray array];
+         }
+ 
+       for (i = 0; i < [allUsers count]; i++)
+diff -up SOGo-5.12.6/SoObjects/Appointments/SOGoAppointmentObject.m.omv~ SOGo-5.12.6/SoObjects/Appointments/SOGoAppointmentObject.m
+--- SOGo-5.12.6/SoObjects/Appointments/SOGoAppointmentObject.m.omv~	2026-03-19 22:20:09.490980322 +0100
++++ SOGo-5.12.6/SoObjects/Appointments/SOGoAppointmentObject.m	2026-03-19 22:20:29.503225918 +0100
+@@ -1551,7 +1551,7 @@ inRecurrenceExceptionsForEvent: (iCalEve
+       if (addDelegate)
+         {
+           delegatedUID = [delegate uidInContext: context];
+-          delegates = [NSArray arrayWithObject: delegate];
++          delegates = [NSMutableArray arrayWithObject: delegate];
+           [event addToAttendees: delegate];
+           
+           if (delegatedUID)
+diff -up SOGo-5.12.6/SoObjects/Appointments/iCalEntityObject+SOGo.m.omv~ SOGo-5.12.6/SoObjects/Appointments/iCalEntityObject+SOGo.m
+--- SOGo-5.12.6/SoObjects/Appointments/iCalEntityObject+SOGo.m.omv~	2026-03-19 22:19:29.415110888 +0100
++++ SOGo-5.12.6/SoObjects/Appointments/iCalEntityObject+SOGo.m	2026-03-19 22:19:46.238690978 +0100
+@@ -835,12 +835,12 @@ NSNumber *iCalDistantFutureNumber = nil;
+                                   || ([webstatus caseInsensitiveCompare: @"TRIGGERED"]
+                                       != NSOrderedSame))
+                                 v = delta;
+-                              nextAlarmDate = [NSDate dateWithTimeIntervalSince1970: c_nextalarm];
++                              nextAlarmDate = [NSCalendarDate dateWithTimeIntervalSince1970: c_nextalarm];
+                             }
+ 			  else if ((anAlarm = [self firstEmailAlarm]) && af)
+ 
+ 			    {
+-			      nextAlarmDate = [NSDate dateWithTimeIntervalSince1970: c_nextalarm];
++			      nextAlarmDate = [NSCalendarDate dateWithTimeIntervalSince1970: c_nextalarm];
+ 			      email_alarm_number = [[self alarms] indexOfObject: anAlarm];
+ 
+                               if ([anAlarm userIsAttendee: alarmOwner])
+diff -up SOGo-5.12.6/SoObjects/Mailer/SOGoDraftObject.m.omv~ SOGo-5.12.6/SoObjects/Mailer/SOGoDraftObject.m
+--- SOGo-5.12.6/SoObjects/Mailer/SOGoDraftObject.m.omv~	2026-03-19 22:23:06.625672275 +0100
++++ SOGo-5.12.6/SoObjects/Mailer/SOGoDraftObject.m	2026-03-19 22:24:11.929279771 +0100
+@@ -2002,7 +2002,7 @@ static NSString    *userAgent      = nil
+     }
+ 
+   // We'll sign and/or encrypt our message. Let's generate the actual body of the message to work with
+-  partGenerator = [[[NGMimePartGenerator alloc] init] autorelease];
++  partGenerator = [[[NGMimeMessageGenerator alloc] init] autorelease];
+   content = [partGenerator generateMimeFromPart: [self mimeMessageWithHeaders: nil
+                                                                     excluding: nil
+                                                              extractingImages: extractImage
+diff -up SOGo-5.12.6/SoObjects/SOGo/DOMNode+SOGo.m.omv~ SOGo-5.12.6/SoObjects/SOGo/DOMNode+SOGo.m
+--- SOGo-5.12.6/SoObjects/SOGo/DOMNode+SOGo.m.omv~	2026-03-19 22:13:13.519889554 +0100
++++ SOGo-5.12.6/SoObjects/SOGo/DOMNode+SOGo.m	2026-03-19 22:14:20.655835830 +0100
+@@ -63,7 +63,7 @@
+   id <DOMElement> currentElement;
+   unsigned int count, max;
+ 
+-  childElementsWithTag = [NSMutableArray array];
++  childElementsWithTag = (NSMutableArray<DOMNodeList>*)[NSMutableArray array];
+ 
+   nodes = [self childNodes];
+   max = [nodes length];
+diff -up SOGo-5.12.6/SoObjects/SOGo/SOGoCacheGCSObject.m.omv~ SOGo-5.12.6/SoObjects/SOGo/SOGoCacheGCSObject.m
+--- SOGo-5.12.6/SoObjects/SOGo/SOGoCacheGCSObject.m.omv~	2026-03-19 21:41:47.918900683 +0100
++++ SOGo-5.12.6/SoObjects/SOGo/SOGoCacheGCSObject.m	2026-03-19 21:46:14.509548832 +0100
+@@ -599,7 +599,7 @@ static EOAttribute *textColumn = nil;
+         parentPathValue = @"NULL";
+ 
+       if ([GCSFolderManager singleStoreMode])
+-        sql = [NSString stringWithFormat:
++        sql = [NSMutableString stringWithFormat:
+                           (@"INSERT INTO %@"
+                            @"  (c_uid, c_path, c_parent_path, c_type, c_creationdate, c_lastmodified,"
+                            @"   c_deleted, c_version, c_content)"
+@@ -610,7 +610,7 @@ static EOAttribute *textColumn = nil;
+                         (int)creationDateValue, (int)lastModifiedValue,
+                         propsValue];
+       else
+-        sql = [NSString stringWithFormat:
++        sql = [NSMutableString stringWithFormat:
+                           (@"INSERT INTO %@"
+                            @"  (c_path, c_parent_path, c_type, c_creationdate, c_lastmodified,"
+                            @"   c_deleted, c_version, c_content)"
+diff -up SOGo-5.12.6/SoObjects/SOGo/SOGoGCSFolder.m.omv~ SOGo-5.12.6/SoObjects/SOGo/SOGoGCSFolder.m
+--- SOGo-5.12.6/SoObjects/SOGo/SOGoGCSFolder.m.omv~	2026-03-19 21:47:02.507491042 +0100
++++ SOGo-5.12.6/SoObjects/SOGo/SOGoGCSFolder.m	2026-03-19 21:47:25.849288707 +0100
+@@ -976,9 +976,9 @@ static NSArray *childRecordFields = nil;
+     {
+       sogoUser = [SOGoUser userWithLogin: theIdentifier roles: nil];
+       if (sogoUser)
+-        allUsers = [NSArray arrayWithObject: sogoUser];
++        allUsers = [NSMutableArray arrayWithObject: sogoUser];
+       else
+-	allUsers = [NSArray array];
++	allUsers = [NSMutableArray array];
+     }
+ 
+   rc = NO;
+diff -up SOGo-5.12.6/SoObjects/SOGo/SOGoMobileProvision.m.omv~ SOGo-5.12.6/SoObjects/SOGo/SOGoMobileProvision.m
+--- SOGo-5.12.6/SoObjects/SOGo/SOGoMobileProvision.m.omv~	2026-03-19 22:15:59.933912686 +0100
++++ SOGo-5.12.6/SoObjects/SOGo/SOGoMobileProvision.m	2026-03-19 22:18:43.305206012 +0100
+@@ -24,10 +24,11 @@
+ #import "SOGoMobileProvision.h"
+ #import "SOGoUser.h"
+ #import "NSString+Crypto.h"
++#import "WOContext+SOGo.h"
+ 
+ @implementation SOGoMobileProvision
+ 
+-+ (NSString *)_plistWithContext:(WOContext *)context andPath:(NSString *)path andType:(ProvisioningType) provisioningType andName:(NSString *)name
+++ (NSData *)_plistWithContext:(WOContext *)context andPath:(NSString *)path andType:(ProvisioningType) provisioningType andName:(NSString *)name
+ {
+   NSData *plistData;
+   SOGoUser *activeUser;
+diff -up SOGo-5.12.6/SoObjects/SOGo/SOGoSession.m.omv~ SOGo-5.12.6/SoObjects/SOGo/SOGoSession.m
+--- SOGo-5.12.6/SoObjects/SOGo/SOGoSession.m.omv~	2026-03-19 22:07:26.963889531 +0100
++++ SOGo-5.12.6/SoObjects/SOGo/SOGoSession.m	2026-03-19 22:07:37.388392235 +0100
+@@ -70,7 +70,7 @@
+ 	  // invoke an action method on SOGo.
+ 	  [folder writeRecordForEntryWithID: theSessionKey
+ 		  value: value
+-		  creationDate: [NSDate dateWithTimeIntervalSince1970: [[d objectForKey: @"c_creationdate"] intValue]]
++		  creationDate: [NSCalendarDate dateWithTimeIntervalSince1970: [[d objectForKey: @"c_creationdate"] intValue]]
+ 		  lastSeenDate: [NSCalendarDate date]];
+ 	}
+     }
+diff -up SOGo-5.12.6/SoObjects/SOGo/SOGoSieveManager.m.omv~ SOGo-5.12.6/SoObjects/SOGo/SOGoSieveManager.m
+--- SOGo-5.12.6/SoObjects/SOGo/SOGoSieveManager.m.omv~	2026-03-19 21:51:37.922359716 +0100
++++ SOGo-5.12.6/SoObjects/SOGo/SOGoSieveManager.m	2026-03-19 21:57:57.496695991 +0100
+@@ -496,7 +496,7 @@ static NSString *sieveScriptName = @"sog
+ }
+ 
+ - (NSString *) _extractSieveAction: (NSDictionary *) action
+-                         withReq: (NSMutableDictionary *) req
++                         withReq: (NSMutableArray *) req
+                          delimiter: (NSString *) delimiter
+ {
+   NSString *sieveAction, *method, *requirement, *argument, *flag, *mailbox;
+@@ -578,7 +578,7 @@ static NSString *sieveScriptName = @"sog
+ }
+ 
+ - (NSArray *) _extractSieveActions: (NSArray *) actions
+-                         withReq: (NSMutableDictionary *) req
++                         withReq: (NSMutableArray *) req
+                          delimiter: (NSString *) delimiter
+ {
+   NSMutableArray *sieveActions;
+@@ -600,7 +600,7 @@ static NSString *sieveScriptName = @"sog
+ }
+ 
+ - (NSString *) _convertScriptToSieve: (NSDictionary *) newScript
+-                           withReq: (NSMutableDictionary *) req
++                           withReq: (NSMutableArray *) req
+                            delimiter: (NSString *) delimiter
+ {
+   NSMutableString *sieveText;
+@@ -1309,7 +1309,7 @@ static NSString *sieveScriptName = @"sog
+ 
+   if ([req count])
+     {
+-      header = [NSString stringWithFormat: @"require [\"%@\"];\r\n",
++      header = [NSMutableString stringWithFormat: @"require [\"%@\"];\r\n",
+                          [[req uniqueObjects] componentsJoinedByString: @"\",\""]];
+       [script insertString: header  atIndex: 0];
+     }
+diff -up SOGo-5.12.6/SoObjects/SOGo/SOGoSystemDefaults.h.omv~ SOGo-5.12.6/SoObjects/SOGo/SOGoSystemDefaults.h
+--- SOGo-5.12.6/SoObjects/SOGo/SOGoSystemDefaults.h.omv~	2026-03-19 21:59:43.793375543 +0100
++++ SOGo-5.12.6/SoObjects/SOGo/SOGoSystemDefaults.h	2026-03-19 21:59:59.079869147 +0100
+@@ -38,7 +38,7 @@ static const NSString *kDisableSharingCa
+ - (NSArray *) domainIds;
+ - (BOOL) doesLoginTypeByDomain;
+ - (NSString *) getLoginTypeForDomain: (NSString*) _domain;
+-- (NSString *) getLoginConfigForDomain: (NSDictionary*) _domain;
++- (NSDictionary *) getLoginConfigForDomain: (NSString*) _domain;
+ - (NSString *) getImapAuthMechForDomain: (NSString*) _domain;
+ - (NSString *) getSmtpAuthMechForDomain: (NSString*) _domain;
+ - (BOOL) forbidUnknownDomainsAuth;
+diff -up SOGo-5.12.6/SoObjects/SOGo/SOGoSystemDefaults.m.omv~ SOGo-5.12.6/SoObjects/SOGo/SOGoSystemDefaults.m
+--- SOGo-5.12.6/SoObjects/SOGo/SOGoSystemDefaults.m.omv~	2026-03-19 22:01:55.827352032 +0100
++++ SOGo-5.12.6/SoObjects/SOGo/SOGoSystemDefaults.m	2026-03-19 22:02:15.652136948 +0100
+@@ -351,7 +351,7 @@ _injectConfigurationFromFile (NSMutableD
+     return nil;
+ }
+ 
+-- (NSString *) getLoginConfigForDomain: (NSDictionary*) _domain
++- (NSDictionary *) getLoginConfigForDomain: (NSString*) _domain
+ {
+   NSDictionary *domains, *config;
+   if(![self doesLoginTypeByDomain])
+diff -up SOGo-5.12.6/SoObjects/SOGo/SOGoUserManager.m.omv~ SOGo-5.12.6/SoObjects/SOGo/SOGoUserManager.m
+--- SOGo-5.12.6/SoObjects/SOGo/SOGoUserManager.m.omv~	2026-03-19 22:02:54.969294955 +0100
++++ SOGo-5.12.6/SoObjects/SOGo/SOGoUserManager.m	2026-03-19 22:03:07.909824179 +0100
+@@ -1401,7 +1401,7 @@ static const NSString *kObfuscatedSecond
+   NSDictionary *info, *data;
+   SOGoSystemDefaults *sd;
+   NSString *uid, *suffix;
+-  NSMutableString *obfuscatedSecondaryEmail;
++  NSString *obfuscatedSecondaryEmail;
+   NSInteger i, j;
+   NSRange range;
+ 
+diff -up SOGo-5.12.6/SoObjects/SOGo/SOGoWebDAVAclManager.m.omv~ SOGo-5.12.6/SoObjects/SOGo/SOGoWebDAVAclManager.m
+--- SOGo-5.12.6/SoObjects/SOGo/SOGoWebDAVAclManager.m.omv~	2026-03-19 22:10:52.733657653 +0100
++++ SOGo-5.12.6/SoObjects/SOGo/SOGoWebDAVAclManager.m	2026-03-19 22:12:13.810615514 +0100
+@@ -229,7 +229,7 @@ static NSNumber *yesObject = nil;
+   return davPermissions;
+ }
+ 
+-- (SOGoWebDAVValue *)
++- (NSDictionary *)
+     _supportedPrivilegeSetFromPermission: (NSDictionary *) perm
+ {
+   NSMutableArray *privilege;
+@@ -252,7 +252,7 @@ static NSNumber *yesObject = nil;
+ 				@"DAV:", privilege);
+ }
+ 
+-- (SOGoWebDAVValue *) treeAsWebDAVValue
++- (NSDictionary *) treeAsWebDAVValue
+ {
+   return [self _supportedPrivilegeSetFromPermission:
+ 		 [aclTree objectForKey: @"{DAV:}all"]];
+diff -up SOGo-5.12.6/SoObjects/SOGo/SQLSource.m.omv~ SOGo-5.12.6/SoObjects/SOGo/SQLSource.m
+--- SOGo-5.12.6/SoObjects/SOGo/SQLSource.m.omv~	2026-03-19 22:04:45.010065751 +0100
++++ SOGo-5.12.6/SoObjects/SOGo/SQLSource.m	2026-03-19 22:05:25.589103501 +0100
+@@ -254,7 +254,7 @@
+   return [self checkLogin: _login
+                  password: _pwd
+                      perr: _perr
+-                   expire: _perr
++                   expire: _expire
+                     grace: _grace
+   disablepasswordPolicyCheck: NO];
+ }
+diff -up SOGo-5.12.6/UI/AdministrationUI/UIxAdministrationAclEditor.m.omv~ SOGo-5.12.6/UI/AdministrationUI/UIxAdministrationAclEditor.m
+--- SOGo-5.12.6/UI/AdministrationUI/UIxAdministrationAclEditor.m.omv~	2026-03-19 22:51:52.576834718 +0100
++++ SOGo-5.12.6/UI/AdministrationUI/UIxAdministrationAclEditor.m	2026-03-19 22:52:08.784443571 +0100
+@@ -137,7 +137,7 @@
+       // Add the 'Any authenticated' user
+       if ([self canSubscribeUsers])
+         {
+-          userData = [NSDictionary dictionaryWithObjectsAndKeys:
++          userData = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                      @"<default>", @"uid",
+                                               [self labelForKey: @"Any Authenticated User"], @"cn",
+                                    @"public-user", @"userClass",
+@@ -148,7 +148,7 @@
+       if ([self canSubscribeUsers] && [self isPublicAccessEnabled])
+         {
+           // Add the 'public access' user
+-          userData = [NSDictionary dictionaryWithObjectsAndKeys:
++          userData = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                      @"anonymous", @"uid",
+                                    [self labelForKey: @"Public Access"], @"cn",
+                                    @"public-user", @"userClass",
+diff -up SOGo-5.12.6/UI/Common/UIxAclEditor.m.omv~ SOGo-5.12.6/UI/Common/UIxAclEditor.m
+--- SOGo-5.12.6/UI/Common/UIxAclEditor.m.omv~	2026-03-19 22:24:55.056120224 +0100
++++ SOGo-5.12.6/UI/Common/UIxAclEditor.m	2026-03-19 22:25:05.594729790 +0100
+@@ -167,7 +167,7 @@
+       if (!defaultUserDisable && defaultUserID)
+       {
+ 
+-          userData = [NSDictionary dictionaryWithObjectsAndKeys:
++          userData = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                      defaultUserID, @"uid",
+                                    [self labelForKey: @"Any Authenticated User"], @"cn",
+                                    @"public-user", @"userClass",
+@@ -178,7 +178,7 @@
+       if ([self canSubscribeUsers] && [self isPublicAccessEnabled])
+         {
+           // Add the 'public access' user
+-          userData = [NSDictionary dictionaryWithObjectsAndKeys:
++          userData = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                      @"anonymous", @"uid",
+                                    [self labelForKey: @"Public Access"], @"cn",
+                                    @"public-user", @"userClass",
+diff -up SOGo-5.12.6/UI/Common/UIxFolderActions.m.omv~ SOGo-5.12.6/UI/Common/UIxFolderActions.m
+--- SOGo-5.12.6/UI/Common/UIxFolderActions.m.omv~	2026-03-19 22:25:22.428592632 +0100
++++ SOGo-5.12.6/UI/Common/UIxFolderActions.m	2026-03-19 22:25:30.082312206 +0100
+@@ -108,7 +108,7 @@
+           objectCreator = ([owner isEqualToString: login] || [allACLs containsObject: SOGoRole_ObjectCreator]);
+           objectEditor = ([owner isEqualToString: login] || [allACLs containsObject: SOGoRole_ObjectEditor]);
+           objectEraser = ([owner isEqualToString: login] || [allACLs containsObject: SOGoRole_ObjectEraser]);
+-          acls = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: objectCreator], @"objectCreator",
++          acls = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: objectCreator], @"objectCreator",
+                                    [NSNumber numberWithBool: objectEditor], @"objectEditor",
+                                    [NSNumber numberWithBool: objectEraser], @"objectEraser", nil];
+ 
+diff -up SOGo-5.12.6/UI/Common/UIxToolbar.m.omv~ SOGo-5.12.6/UI/Common/UIxToolbar.m
+--- SOGo-5.12.6/UI/Common/UIxToolbar.m.omv~	2026-03-19 22:26:29.603562070 +0100
++++ SOGo-5.12.6/UI/Common/UIxToolbar.m	2026-03-19 22:26:42.372050591 +0100
+@@ -138,7 +138,7 @@
+   if ((tb = [pathToConfig objectForKey:path]) != nil)
+     return [tb isNotNull] ? (id)tb : nil;
+   
+-  if ((tb = [NSArray arrayWithContentsOfFile:path]) == nil)
++  if ((tb = [NSDictionary arrayWithContentsOfFile:path]) == nil)
+     [self errorWithFormat:@"Could not load toolbar resource: %@", _name];
+ 
+   if (pathToConfig == nil)
+diff -up SOGo-5.12.6/UI/Contacts/UIxContactEditor.m.omv~ SOGo-5.12.6/UI/Contacts/UIxContactEditor.m
+--- SOGo-5.12.6/UI/Contacts/UIxContactEditor.m.omv~	2026-03-19 22:32:26.238455003 +0100
++++ SOGo-5.12.6/UI/Contacts/UIxContactEditor.m	2026-03-19 22:32:33.335780974 +0100
+@@ -546,7 +546,7 @@ static Class SOGoContactGCSEntryK = Nil;
+               [qualifier autorelease];
+               [qualifiers addObject: qualifier];
+             }
+-	  qualifier = [[EOAndQualifier alloc] initWithQualifierArray: qualifiers];
++	  qualifier = [[EOKeyValueQualifier alloc] initWithQualifierArray: qualifiers];
+ 	  similarRecords = [(SOGoContactGCSFolder *) [co container] lookupContactsWithQualifier: qualifier];
+ 	}
+     }
+diff -up SOGo-5.12.6/UI/Contacts/UIxContactFoldersView.m.omv~ SOGo-5.12.6/UI/Contacts/UIxContactFoldersView.m
+--- SOGo-5.12.6/UI/Contacts/UIxContactFoldersView.m.omv~	2026-03-19 22:36:30.309188383 +0100
++++ SOGo-5.12.6/UI/Contacts/UIxContactFoldersView.m	2026-03-19 22:36:37.393386406 +0100
+@@ -339,7 +339,7 @@ Class SOGoContactSourceFolderK, SOGoGCSF
+       objectCreator = ([owner isEqualToString: userLogin] || [allACLs containsObject: SOGoRole_ObjectCreator]);
+       objectEditor = ([owner isEqualToString: userLogin] || [allACLs containsObject: SOGoRole_ObjectEditor]);
+       objectEraser = ([owner isEqualToString: userLogin] || [allACLs containsObject: SOGoRole_ObjectEraser]);
+-      acls = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: objectCreator], @"objectCreator",
++      acls = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: objectCreator], @"objectCreator",
+                                [NSNumber numberWithBool: objectEditor], @"objectEditor",
+                                [NSNumber numberWithBool: objectEraser], @"objectEraser", nil];
+ 
+diff -up SOGo-5.12.6/UI/Contacts/UIxContactView.m.omv~ SOGo-5.12.6/UI/Contacts/UIxContactView.m
+--- SOGo-5.12.6/UI/Contacts/UIxContactView.m.omv~	2026-03-19 22:27:13.752469008 +0100
++++ SOGo-5.12.6/UI/Contacts/UIxContactView.m	2026-03-19 22:27:28.475726157 +0100
+@@ -417,10 +417,10 @@
+                 [allUserEmails addObject: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                           email, @"value", @"work", @"type", nil]];
+               }
+-              userData = [NSDictionary dictionaryWithObjectsAndKeys:
+-                                       [user loginInDomain], @"c_uid",
+-                                       [user cn], @"c_cn",
+-                                       allUserEmails, @"emails", nil];
++              userData = [NSMutableDictionary dictionaryWithObjectsAndKeys:
++                                              [user loginInDomain], @"c_uid",
++                                              [user cn], @"c_cn",
++                                              allUserEmails, @"emails", nil];
+               [allUsersData addObject: userData];
+             }
+           dict = [NSDictionary dictionaryWithObject: allUsersData forKey: @"members"];
+diff -up SOGo-5.12.6/UI/Contacts/UIxContactsListActions.m.omv~ SOGo-5.12.6/UI/Contacts/UIxContactsListActions.m
+--- SOGo-5.12.6/UI/Contacts/UIxContactsListActions.m.omv~	2026-03-19 22:32:54.207257875 +0100
++++ SOGo-5.12.6/UI/Contacts/UIxContactsListActions.m	2026-03-19 22:34:14.800142570 +0100
+@@ -232,7 +232,7 @@
+ 
+       if (globalAddressBookResults && results) { // Both results, merge arrays
+         // Results in personal folder will appear first
+-        results = [results arrayByAddingObjectsFromArray: globalAddressBookResults];
++        results = [[results arrayByAddingObjectsFromArray: globalAddressBookResults] mutableCopy];
+       } else if (globalAddressBookResults) { // No results in personal AB
+         results = globalAddressBookResults;
+       }
+@@ -240,7 +240,7 @@
+       // Sort the results
+       descriptor = [[NSSortDescriptor alloc] initWithKey: [self sortKey]
+                                                ascending: ordering];
+-      results = [results sortedArrayUsingDescriptors: [NSArray arrayWithObjects: descriptor, nil]];
++      results = [[results sortedArrayUsingDescriptors: [NSArray arrayWithObjects: descriptor, nil]] mutableCopy];
+       [descriptor release];
+ 
+       if (excludeLists)
+diff -up SOGo-5.12.6/UI/MailerUI/UIxMailFolderActions.m.omv~ SOGo-5.12.6/UI/MailerUI/UIxMailFolderActions.m
+--- SOGo-5.12.6/UI/MailerUI/UIxMailFolderActions.m.omv~	2026-03-19 22:38:29.082010612 +0100
++++ SOGo-5.12.6/UI/MailerUI/UIxMailFolderActions.m	2026-03-19 22:40:31.857345275 +0100
+@@ -149,8 +149,8 @@
+ 
+   if (!newFolderName || [newFolderName length] == 0)
+     {
+-      message = [NSDictionary dictionaryWithObject: [self labelForKey: @"Missing name parameter" inContext: context]
+-                                            forKey: @"message"];
++      message = [NSMutableDictionary dictionaryWithObject: [self labelForKey: @"Missing name parameter" inContext: context]
++                                     forKey: @"message"];
+       response = [self responseWithStatus: 500 andJSONRepresentation: message];
+     }
+   else
+@@ -159,7 +159,7 @@
+       error = [co renameTo: newFolderName];
+       if (error)
+         {
+-          message = [NSDictionary dictionaryWithObject: [self labelForKey: @"Unable to rename folder." inContext: context]
++          message = [NSMutableDictionary dictionaryWithObject: [self labelForKey: @"Unable to rename folder." inContext: context]
+                                                 forKey: @"message"];
+           response = [self responseWithStatus: 500 andJSONRepresentation: message];
+         }
+@@ -184,7 +184,7 @@
+           else
+             sievePath = newFolderPath;
+ 
+-          message = [NSDictionary dictionaryWithObjectsAndKeys:
++          message = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                     newFolderPath, @"path", sievePath, @"sievePath", nil];
+           response = [self responseWithStatus: 200 andJSONRepresentation: message];
+         }
+@@ -232,7 +232,7 @@
+ 
+   if (!newParentPath || [newParentPath length] == 0)
+     {
+-      message = [NSDictionary dictionaryWithObject: [self labelForKey: @"Missing parent parameter" inContext: context]
++      message = [NSMutableDictionary dictionaryWithObject: [self labelForKey: @"Missing parent parameter" inContext: context]
+                                             forKey: @"message"];
+       response = [self responseWithStatus: 500 andJSONRepresentation: message];
+     }
+@@ -244,7 +244,7 @@
+       error = [co renameTo: newFolderPath];
+       if (error)
+         {
+-          message = [NSDictionary dictionaryWithObject: [self labelForKey: @"Unable to move folder." inContext: context]
++          message = [NSMutableDictionary dictionaryWithObject: [self labelForKey: @"Unable to move folder." inContext: context]
+                                                 forKey: @"message"];
+           response = [self responseWithStatus: 500 andJSONRepresentation: message];
+         }
+@@ -287,7 +287,7 @@
+           else
+             sievePath = newFolderPath;
+ 
+-          message = [NSDictionary dictionaryWithObjectsAndKeys:
++          message = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                     newFolderPath, @"path", sievePath, @"sievePath", nil];
+           response = [self responseWithStatus: 200 andJSONRepresentation: message];
+         }
+@@ -541,7 +541,7 @@
+     }
+   else
+     {
+-      data = [NSDictionary dictionaryWithObject: [self labelForKey: @"Missing 'uids' parameter." inContext: context]
++      data = [NSMutableDictionary dictionaryWithObject: [self labelForKey: @"Missing 'uids' parameter." inContext: context]
+                                          forKey: @"message"];
+       response = [self responseWithStatus: 500 andJSONRepresentation: data];
+     }
+diff -up SOGo-5.12.6/UI/MailerUI/UIxMailView.m.omv~ SOGo-5.12.6/UI/MailerUI/UIxMailView.m
+--- SOGo-5.12.6/UI/MailerUI/UIxMailView.m.omv~	2026-03-19 22:37:53.048420828 +0100
++++ SOGo-5.12.6/UI/MailerUI/UIxMailView.m	2026-03-19 22:38:00.056133845 +0100
+@@ -339,7 +339,7 @@ static NSString *mailETag = nil;
+   
+   if (![self message]) // TODO: redirect to proper error
+     {
+-      data = [NSDictionary dictionaryWithObject: [self labelForKey: @"Did not find specified message"]
++      data = [NSMutableDictionary dictionaryWithObject: [self labelForKey: @"Did not find specified message"]
+                                          forKey: @"message"];
+       return [self responseWithStatus: 404 /* Not Found */
+                 andJSONRepresentation: data];
+diff -up SOGo-5.12.6/UI/MainUI/SOGoRootPage.m.omv~ SOGo-5.12.6/UI/MainUI/SOGoRootPage.m
+--- SOGo-5.12.6/UI/MainUI/SOGoRootPage.m.omv~	2026-03-19 22:41:25.012880098 +0100
++++ SOGo-5.12.6/UI/MainUI/SOGoRootPage.m	2026-03-19 22:41:44.445103002 +0100
+@@ -630,7 +630,7 @@ static const NSString *kJwtKey = @"jwt";
+   WOResponse *response;
+   NSString *login, *redirectLocation, *serverUrl;
+   NSString *sessionState, *code, *refreshTokenValue;
+-  NSURL *newLocation, *oldLocation;
++  NSString *newLocation, *oldLocation;
+   NSDictionary *formValues;
+   SOGoUser *loggedInUser;
+   WOCookie *openIdCookie, *openIdCookieLocation, *openIdRefreshCookie, *domainCookie;
+diff -up SOGo-5.12.6/UI/PreferencesUI/UIxPreferences.m.omv~ SOGo-5.12.6/UI/PreferencesUI/UIxPreferences.m
+--- SOGo-5.12.6/UI/PreferencesUI/UIxPreferences.m.omv~	2026-03-19 22:42:30.486109541 +0100
++++ SOGo-5.12.6/UI/PreferencesUI/UIxPreferences.m	2026-03-19 22:45:59.414790343 +0100
+@@ -273,7 +273,7 @@ static NSArray *reminderValues = nil;
+   NSObject <SOGoSource> *userSource;
+   NSMutableDictionary *translations = [[NSMutableDictionary alloc] init];
+   NSDictionary *policy;
+-  NSDictionary *translatedUserPolicy;
++  NSArray *translatedUserPolicy;
+   
+   userSource = [user authenticationSource];
+   
+@@ -441,7 +441,7 @@ static NSArray *reminderValues = nil;
+ {
+   NSMutableArray *options;
+ 
+-  options = [NSArray arrayWithObjects: @"selected", @"personal", @"first", nil];
++  options = [NSMutableArray arrayWithObjects: @"selected", @"personal", @"first", nil];
+ 
+   return options;
+ }
+@@ -962,7 +962,7 @@ static NSArray *reminderValues = nil;
+   }
+   else
+   {
+-    defaultCategoriesLabels = [localizedLabels allValues];
++    defaultCategoriesLabels = [[localizedLabels allValues] mutableCopy];
+   }
+ 
+ 
+diff -up SOGo-5.12.6/UI/Scheduler/UIxAppointmentEditor.m.omv~ SOGo-5.12.6/UI/Scheduler/UIxAppointmentEditor.m
+--- SOGo-5.12.6/UI/Scheduler/UIxAppointmentEditor.m.omv~	2026-03-19 22:49:33.173703521 +0100
++++ SOGo-5.12.6/UI/Scheduler/UIxAppointmentEditor.m	2026-03-19 22:50:09.309913945 +0100
+@@ -635,14 +635,14 @@
+       error = [[ex reason] objectFromJSONString];
+       if (error == nil)
+         error = [ex reason];
+-      jsonResponse = [NSDictionary dictionaryWithObjectsAndKeys:
+-                                     error, @"message", nil];
++      jsonResponse = [[NSDictionary dictionaryWithObjectsAndKeys:
++                                     error, @"message", nil] jsonRepresentation];
+     }
+   else
+     {
+       httpStatus = 200;
+-      jsonResponse = [NSDictionary dictionaryWithObjectsAndKeys:
+-                                     @"success", @"status", nil];
++      jsonResponse = [[NSDictionary dictionaryWithObjectsAndKeys:
++                                     @"success", @"status", nil] jsonRepresentation];
+     }
+ 
+   return [self responseWithStatus: httpStatus
+diff -up SOGo-5.12.6/UI/Scheduler/UIxCalMainActions.m.omv~ SOGo-5.12.6/UI/Scheduler/UIxCalMainActions.m
+--- SOGo-5.12.6/UI/Scheduler/UIxCalMainActions.m.omv~	2026-03-19 22:46:37.353616682 +0100
++++ SOGo-5.12.6/UI/Scheduler/UIxCalMainActions.m	2026-03-19 22:47:02.648484072 +0100
+@@ -90,7 +90,7 @@
+   if (ex)
+     {
+       httpStatus = 500;
+-      jsonResponse = [NSDictionary dictionaryWithObjectsAndKeys:
++      jsonResponse = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                      @"failure", @"status",
+                                    [ex reason], @"message",
+                                    nil];
+diff -up SOGo-5.12.6/UI/Scheduler/UIxCalendarSelector.m.omv~ SOGo-5.12.6/UI/Scheduler/UIxCalendarSelector.m
+--- SOGo-5.12.6/UI/Scheduler/UIxCalendarSelector.m.omv~	2026-03-19 22:47:57.841189385 +0100
++++ SOGo-5.12.6/UI/Scheduler/UIxCalendarSelector.m	2026-03-19 22:48:29.437616506 +0100
+@@ -204,8 +204,8 @@ _intValueFromHex (NSString *hexString)
+           else
+             synchronize = [folder synchronize];
+ 
+-          acls = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: objectCreator], @"objectCreator",
+-                                   [NSNumber numberWithBool: objectEraser], @"objectEraser", nil];
++          acls = [NSMutableDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool: objectCreator], @"objectCreator",
++                                      [NSNumber numberWithBool: objectEraser], @"objectEraser", nil];
+           [calendar setObject: acls  forKey: @"acls"];
+ 
+           if ([[folder nameInContainer] isEqualToString: @"personal"])
+diff -up SOGo-5.12.6/UI/Scheduler/UIxComponentEditor.m.omv~ SOGo-5.12.6/UI/Scheduler/UIxComponentEditor.m
+--- SOGo-5.12.6/UI/Scheduler/UIxComponentEditor.m.omv~	2026-03-19 22:47:16.248053763 +0100
++++ SOGo-5.12.6/UI/Scheduler/UIxComponentEditor.m	2026-03-19 22:47:21.684743912 +0100
+@@ -619,7 +619,7 @@ static NSArray *reminderValues = nil;
+   if(url && attachUrls)
+     [attachUrls addObject: [NSDictionary dictionaryWithObject: [url absoluteString] forKey: @"value"]];
+   else
+-    attachUrls = [NSArray arrayWithObjects: [NSDictionary dictionaryWithObject: [url absoluteString] forKey: @"value"], nil];
++    attachUrls = [NSMutableArray arrayWithObjects: [NSDictionary dictionaryWithObject: [url absoluteString] forKey: @"value"], nil];
+ 
+   return attachUrls;
+ }
+diff -up SOGo-5.12.6/UI/Scheduler/UIxTaskEditor.m.omv~ SOGo-5.12.6/UI/Scheduler/UIxTaskEditor.m
+--- SOGo-5.12.6/UI/Scheduler/UIxTaskEditor.m.omv~	2026-03-19 22:50:24.159154262 +0100
++++ SOGo-5.12.6/UI/Scheduler/UIxTaskEditor.m	2026-03-19 22:51:24.441830635 +0100
+@@ -393,16 +393,16 @@
+   if (ex)
+     {
+       httpStatus = 500;
+-      jsonResponse = [NSDictionary dictionaryWithObjectsAndKeys:
++      jsonResponse = [[NSDictionary dictionaryWithObjectsAndKeys:
+                                      @"failure", @"status",
+                                    [ex reason], @"message",
+-                                   nil];
++                                   nil] jsonRepresentation];
+     }
+   else
+     {
+       httpStatus = 200;
+-      jsonResponse = [NSDictionary dictionaryWithObjectsAndKeys:
+-                                     @"success", @"status", nil];
++      jsonResponse = [[NSDictionary dictionaryWithObjectsAndKeys:
++                                     @"success", @"status", nil] jsonRepresentation];
+     }
+ 
+   return [self responseWithStatus: httpStatus
+diff -up SOGo-5.12.6/SoObjects/Appointments/SOGoAppointmentObject.h.omv~ SOGo-5.12.6/SoObjects/Appointments/SOGoAppointmentObject.h
+--- SOGo-5.12.6/SoObjects/Appointments/SOGoAppointmentObject.h.omv~	2026-03-20 03:16:45.867426149 +0100
++++ SOGo-5.12.6/SoObjects/Appointments/SOGoAppointmentObject.h	2026-03-20 03:17:02.489430502 +0100
+@@ -49,7 +49,7 @@
+                                       alarm: (iCalAlarm *) alarm
+ 			    forRecurrenceId: (NSCalendarDate *) _recurrenceId;
+ 
+-- (void) prepareDeleteOccurence: (iCalEvent *) occurence;
++- (void) prepareDeleteOccurence: (iCalRepeatableEntityObject *) occurence;
+ 
+ //
+ // Old CalDAV scheduling (draft 4 and below) methods. We keep them since we still
+diff -up SOGo-5.12.6/SoObjects/Appointments/SOGoComponentOccurence.m.omv~ SOGo-5.12.6/SoObjects/Appointments/SOGoComponentOccurence.m
