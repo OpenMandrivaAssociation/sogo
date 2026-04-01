@@ -2,7 +2,7 @@
 %define scmrev %nil
 
 Name: sogo
-Version: 5.12.6
+Version: 5.12.7
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release: 0.%{beta}.1

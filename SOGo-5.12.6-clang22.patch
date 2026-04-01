@@ -267,18 +267,6 @@ diff -up SOGo-5.12.6/SoObjects/SOGo/SOGoWebDAVAclManager.m.omv~ SOGo-5.12.6/SoOb
  {
    return [self _supportedPrivilegeSetFromPermission:
  		 [aclTree objectForKey: @"{DAV:}all"]];
-diff -up SOGo-5.12.6/SoObjects/SOGo/SQLSource.m.omv~ SOGo-5.12.6/SoObjects/SOGo/SQLSource.m
---- SOGo-5.12.6/SoObjects/SOGo/SQLSource.m.omv~	2026-03-19 22:04:45.010065751 +0100
-+++ SOGo-5.12.6/SoObjects/SOGo/SQLSource.m	2026-03-19 22:05:25.589103501 +0100
-@@ -254,7 +254,7 @@
-   return [self checkLogin: _login
-                  password: _pwd
-                      perr: _perr
--                   expire: _perr
-+                   expire: _expire
-                     grace: _grace
-   disablepasswordPolicyCheck: NO];
- }
 diff -up SOGo-5.12.6/UI/AdministrationUI/UIxAdministrationAclEditor.m.omv~ SOGo-5.12.6/UI/AdministrationUI/UIxAdministrationAclEditor.m
 --- SOGo-5.12.6/UI/AdministrationUI/UIxAdministrationAclEditor.m.omv~	2026-03-19 22:51:52.576834718 +0100
 +++ SOGo-5.12.6/UI/AdministrationUI/UIxAdministrationAclEditor.m	2026-03-19 22:52:08.784443571 +0100
