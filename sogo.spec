@@ -2,10 +2,10 @@
 %define scmrev %nil
 
 Name: sogo
-Version: 5.12.7
+Version: 5.12.9
 %if "%scmrev" == ""
 %if "%beta" != ""
-Release: 0.%{beta}.1
+Release: 1.%{beta}.1
 %else
 Release: 1
 %endif
@@ -78,7 +78,7 @@ Development files for SOGo -- needed if you wish to develop
 or compile SOGo plugins.
 
 %prep
-%autosetup -p1 -n SOGo-%{version}
+%autosetup -p1 -n SOGo-5.12.9
 # Not autoconf, even though it looks similar
 # --enable-debug (the default) uses -O0, we don't want that
 ./configure --disable-debug
