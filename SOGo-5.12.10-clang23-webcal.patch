@@ -1,0 +1,24 @@
+diff -up SOGo-5.12.10/SoObjects/Appointments/SOGoWebAppointmentFolder.h.clang23 SOGo-5.12.10/SoObjects/Appointments/SOGoWebAppointmentFolder.h
+--- SOGo-5.12.10/SoObjects/Appointments/SOGoWebAppointmentFolder.h.clang23
++++ SOGo-5.12.10/SoObjects/Appointments/SOGoWebAppointmentFolder.h
+@@ -30,7 +30,7 @@
+ - (void) setUsername: (NSString *) username
+          andPassword: (NSString *) password;
+ 
+-- (NSDictionary *) loadWebCalendar;
++- (NSMutableDictionary *) loadWebCalendar;
+ - (void) deleteAllContent;
+ 
+ - (void) setReloadOnLogin: (BOOL) newReloadOnLogin;
+diff -up SOGo-5.12.10/SoObjects/Appointments/SOGoWebAppointmentFolder.m.clang23 SOGo-5.12.10/SoObjects/Appointments/SOGoWebAppointmentFolder.m
+--- SOGo-5.12.10/SoObjects/Appointments/SOGoWebAppointmentFolder.m.clang23
++++ SOGo-5.12.10/SoObjects/Appointments/SOGoWebAppointmentFolder.m
+@@ -101,7 +101,7 @@
+                     inCategory: @"WebCalendarsAuthentication"];
+ }
+ 
+-- (NSDictionary *) loadWebCalendar
++- (NSMutableDictionary *) loadWebCalendar
+ {
+   NSString *location, *httpauth, *content, *newDisplayName;
+   NSMutableDictionary *result;
