@@ -2,7 +2,7 @@
 %define scmrev %nil
 
 Name: sogo
-Version: 5.12.9
+Version: 5.12.10
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release: 1.%{beta}.1
@@ -41,7 +41,7 @@ BuildRequires:	slibtool
 BuildRequires: gnustep-make >= 2.6.2-3
 BuildRequires: gnustep-base-devel gnustep-gui-devel
 BuildRequires: pkgconfig(libobjc)
-BuildRequires: sope-devel
+BuildRequires: sope-devel >= %{version}
 BuildRequires: hostname
 BuildRequires: pkgconfig(libmemcached)
 BuildRequires: pkgconfig(libcurl)
@@ -78,7 +78,7 @@ Development files for SOGo -- needed if you wish to develop
 or compile SOGo plugins.
 
 %prep
-%autosetup -p1 -n SOGo-5.12.9
+%autosetup -p1 -n SOGo-%{version}
 # Not autoconf, even though it looks similar
 # --enable-debug (the default) uses -O0, we don't want that
 ./configure --disable-debug
