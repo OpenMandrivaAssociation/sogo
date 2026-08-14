@@ -1,0 +1,55 @@
+diff -up SOGo-5.12.10/SOPE/GDLContentStore/GCSFolderManager.m.clang23 SOGo-5.12.10/SOPE/GDLContentStore/GCSFolderManager.m
+--- SOGo-5.12.10/SOPE/GDLContentStore/GCSFolderManager.m.clang23
++++ SOGo-5.12.10/SOPE/GDLContentStore/GCSFolderManager.m
+@@ -742,9 +742,9 @@
+   result = NO;
+ 
+   if ((channel = [self acquireOpenChannel]) == nil) {
+-    return [NSException exceptionWithName:@"GCSNoChannel"
+-			reason:@"could not "
+-			userInfo:nil];
++    [self logWithFormat:@"ERROR(%s): could not open channel",
++	  __PRETTY_FUNCTION__];
++    return NO;
+   }
+ 
+   fnames = [self internalNamesFromPath: _path];
+@@ -795,9 +795,9 @@
+   unsigned i, count;
+   
+   if ((channel = [self acquireOpenChannel]) == nil) {
+-    return [NSException exceptionWithName:@"GCSNoChannel"
+-			reason:@"could not "
+-			userInfo:nil];
++    [self logWithFormat:@"ERROR(%s): could not open channel",
++	  __PRETTY_FUNCTION__];
++    return nil;
+   }
+ 
+   if ((fnames = [self internalNamesFromPath:_path]) == nil) {
+@@ -860,9 +860,9 @@
+   EOAdaptorChannel *channel;
+ 
+   if ((channel = [self acquireOpenChannel]) == nil) {
+-    return [NSException exceptionWithName:@"GCSNoChannel"
+-			reason:@"could not "
+-			userInfo:nil];
++    [self logWithFormat:@"ERROR(%s): could not open channel",
++	  __PRETTY_FUNCTION__];
++    return nil;
+   }
+   
+   if ((fnames = [self internalNamesFromPath:_path]) == nil) {
+@@ -933,9 +933,9 @@
+   EOAdaptorChannel *channel;
+ 
+   if ((channel = [self acquireOpenChannel]) == nil) {
+-    return [NSException exceptionWithName:@"GCSNoChannel"
+-			reason:@"could not "
+-			userInfo:nil];
++    [self logWithFormat:@"ERROR(%s): could not open channel",
++	  __PRETTY_FUNCTION__];
++    return nil;
+   }
+   
+   if ((fnames = [self internalNamesFromPath:_path]) == nil) {
