@@ -31,6 +31,7 @@ Patch4: sogo-5.12.1-compile.patch
 Patch5: sogo-5.12.4-compile.patch
 Patch6: SOGo-5.12.6-clang22.patch
 Patch7: SOGo-5.12.10-clang23.patch
+Patch8: SOGo-5.12.10-openssl-asn1.patch
 Summary: The SOGo groupware server
 URL: https://sogo.nu/
 License: GPL/LGPL v2+
