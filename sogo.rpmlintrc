@@ -1,2 +1,6 @@
 # Loads of false positives caused by GNUstep FS layout
 addFilter("E: devel-file-in-non-devel-package")
+# Framework Versions/Current is a second copy of Versions/N
+addFilter("E: files-duplicated-waste")
+# Upstream headers still have the old FSF street address
+addFilter("E: incorrect-fsf-address")
