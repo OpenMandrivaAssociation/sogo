@@ -1,0 +1,55 @@
+diff -up SOGo-5.12.11/SOPE/GDLContentStore/GCSFolderManager.m.clang23 SOGo-5.12.11/SOPE/GDLContentStore/GCSFolderManager.m
+--- SOGo-5.12.11/SOPE/GDLContentStore/GCSFolderManager.m.clang23
++++ SOGo-5.12.11/SOPE/GDLContentStore/GCSFolderManager.m
+@@ -745,9 +745,9 @@
+   if (fnames)
+   {
+     if ((channel = [self acquireOpenChannel]) == nil) {
+-      return [NSException exceptionWithName:@"GCSNoChannel"
+-        reason:@"could not "
+-        userInfo:nil];
++      [self logWithFormat:@"ERROR(%s): could not open channel",
++	    __PRETTY_FUNCTION__];
++      return NO;
+     }
+     sql = [self generateSQLPathFetchForInternalNames: fnames 
+                                           exactMatch: YES
+@@ -799,9 +799,9 @@
+   }
+   
+   if ((channel = [self acquireOpenChannel]) == nil) {
+-    return [NSException exceptionWithName:@"GCSNoChannel"
+-			reason:@"could not "
+-			userInfo:nil];
++    [self logWithFormat:@"ERROR(%s): could not open channel",
++	  __PRETTY_FUNCTION__];
++    return nil;
+   }
+   sql = [self generateSQLPathFetchForInternalNames:fnames 
+ 	      exactMatch:NO orDirectSubfolderMatch:(_recursive ? NO : YES) withChannel: channel];
+@@ -866,9 +866,9 @@
+   }
+   
+   if ((channel = [self acquireOpenChannel]) == nil) {
+-    return [NSException exceptionWithName:@"GCSNoChannel"
+-			reason:@"could not "
+-			userInfo:nil];
++    [self logWithFormat:@"ERROR(%s): could not open channel",
++	  __PRETTY_FUNCTION__];
++    return nil;
+   }
+   sql = [self generateSQLPathAndNameFetchForInternalNames:fnames 
+ 	      exactMatch:NO orDirectSubfolderMatch:(_recursive ? NO : YES) withChannel: channel];
+@@ -942,9 +942,9 @@
+   
+   /* generate SQL to fetch folder attributes */
+   if ((channel = [self acquireOpenChannel]) == nil) {
+-    return [NSException exceptionWithName:@"GCSNoChannel"
+-			reason:@"could not "
+-			userInfo:nil];
++    [self logWithFormat:@"ERROR(%s): could not open channel",
++	  __PRETTY_FUNCTION__];
++    return nil;
+   }
+   
+   ws = [self generateSQLWhereForInternalNames:fnames 

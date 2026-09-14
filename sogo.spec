@@ -2,12 +2,12 @@
 %define scmrev %nil
 
 Name: sogo
-Version: 5.12.10
+Version: 5.12.11
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release: 1.%{beta}.1
 %else
-Release: 2
+Release: 1
 %endif
 Source0: https://packages.sogo.nu/sources/SOGo-%version%beta.tar.gz
 %else
@@ -30,7 +30,7 @@ Patch3: sogo-5.11.0-compile.patch
 Patch4: sogo-5.12.1-compile.patch
 Patch5: sogo-5.12.4-compile.patch
 Patch6: SOGo-5.12.6-clang22.patch
-Patch7: SOGo-5.12.10-clang23.patch
+Patch7: SOGo-5.12.11-clang23.patch
 Patch8: SOGo-5.12.10-openssl-asn1.patch
 Patch9: SOGo-5.12.10-clang23-webcal.patch
 Summary: The SOGo groupware server
