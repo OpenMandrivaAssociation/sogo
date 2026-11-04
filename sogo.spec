@@ -33,6 +33,10 @@ Patch6: SOGo-5.12.6-clang22.patch
 Patch7: SOGo-5.12.11-clang23.patch
 Patch8: SOGo-5.12.10-openssl-asn1.patch
 Patch9: SOGo-5.12.10-clang23-webcal.patch
+# 5.12.13 widened this variable to EOQualifier *, but
+# selectAttributesX:describedByQualifier: takes EOSQLQualifier *.
+# Clang 23 rejects the implicit downcast. 5.12.12 had the right type.
+Patch10: SOGo-5.12.13-sessions-qualifier.patch
 Summary: The SOGo groupware server
 URL: https://sogo.nu/
 License: GPL/LGPL v2+

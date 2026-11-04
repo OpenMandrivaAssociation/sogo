@@ -1,0 +1,12 @@
+diff -up SOGo-5.12.13/SOPE/GDLContentStore/GCSSessionsFolder.m SOGo-5.12.13/SOPE/GDLContentStore/GCSSessionsFolder.m
+--- SOGo-5.12.13/SOPE/GDLContentStore/GCSSessionsFolder.m
++++ SOGo-5.12.13/SOPE/GDLContentStore/GCSSessionsFolder.m
+@@ -204,7 +204,7 @@
+   NSArray *attrs;
+   NSDictionary *record;
+   EOEntity *entity;
+-  EOQualifier *qualifier;
++  EOSQLQualifier *qualifier;
+ 
+   record = nil;
+ 
