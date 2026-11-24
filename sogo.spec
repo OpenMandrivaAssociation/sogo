@@ -2,7 +2,7 @@
 %define scmrev %nil
 
 Name: sogo
-Version: 5.12.13
+Version: 5.12.14
 %if "%scmrev" == ""
 %if "%beta" != ""
 Release: 1.%{beta}.1
@@ -116,9 +116,6 @@ mkdir -p %{buildroot}%{_localstatedir}/spool/sogo
 
 mkdir -p %{buildroot}%{_sysconfdir}/logrotate.d
 install -m 644 Scripts/logrotate %{buildroot}%{_sysconfdir}/logrotate.d/sogo
-
-%pre
-%sysusers_create_package sogo %{S:17}
 
 %files
 %_sbindir/*
